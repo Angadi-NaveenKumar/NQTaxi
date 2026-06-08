@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-brand-black text-white font-sans antialiased;
+    min-height: 100vh;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-brand-dark; }
+  ::-webkit-scrollbar-thumb { @apply bg-brand-yellow rounded-full; }
+}
+
+@layer components {
+  /* ── Buttons ─────────────────────────────────────── */
+  .btn-primary {
+    @apply bg-brand-yellow text-brand-black font-semibold px-6 py-3 rounded-xl
+           hover:brightness-110 active:scale-95 transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply border border-brand-yellow text-brand-yellow font-semibold px-6 py-3 rounded-xl
+           hover:bg-brand-yellow hover:text-brand-black active:scale-95 transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply text-white/70 font-medium px-6 py-3 rounded-xl
+           hover:text-white hover:bg-white/10 active:scale-95 transition-all duration-200;
+  }
+
+  /* ── Cards ───────────────────────────────────────── */
+  .card {
+    @apply bg-brand-gray rounded-2xl p-6 border border-white/10;
+  }
+
+  .card-hover {
+    @apply card hover:border-brand-yellow/50 hover:shadow-lg
+           hover:shadow-brand-yellow/10 transition-all duration-300;
+  }
+
+  /* ── Inputs ──────────────────────────────────────── */
+  .input-field {
+    @apply w-full bg-brand-gray border border-white/20 text-white placeholder-white/40
+           rounded-xl px-4 py-3 focus:outline-none focus:border-brand-yellow
+           transition-colors duration-200;
+  }
+
+  /* ── Badges ──────────────────────────────────────── */
+  .badge-success { @apply bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full font-medium; }
+  .badge-warning { @apply bg-brand-yellow/20 text-brand-yellow text-xs px-2 py-1 rounded-full font-medium; }
+  .badge-danger  { @apply bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full font-medium; }
+  .badge-info    { @apply bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full font-medium; }
+
+  /* ── Page wrapper ────────────────────────────────── */
+  .page-wrapper {
+    @apply min-h-screen bg-brand-black;
+  }
+}
