@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card } from '../components/ui';
+import { Button, Card } from '../../components/ui';
 import { ShieldCheck, ArrowLeft, RefreshCw } from 'lucide-react';
 import {
   getOtpSession,
@@ -9,7 +9,8 @@ import {
   resendOtp,
   isDevelopmentMode,
   getDevOtp,
-} from '../services/authService';
+} from '../../services/authService';
+import { useAppStore } from '../../store/useAppStore';
 
 export default function OTPVerification() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -19,6 +20,7 @@ export default function OTPVerification() {
   const [maskedContact, setMaskedContact] = useState('***');
   const inputs = useRef([]);
   const navigate = useNavigate();
+  const { setDriverOtpVerified, setRole, setAuthenticated } = useAppStore();
 
   useEffect(() => {
     const session = getOtpSession();
@@ -70,12 +72,16 @@ export default function OTPVerification() {
         return;
       }
 
-      navigate('/login', {
-        replace: true,
-        state: {
-          message: 'Account created successfully! Please sign in with your credentials.',
-        },
-      });
+      // Set auth state
+      setAuthenticated(true);
+      setRole(result.user.role);
+
+      if (result.user.role === 'driver') {
+        setDriverOtpVerified(true);
+        navigate('/driver/profile-setup', { replace: true });
+      } else {
+        navigate('/customer/dashboard', { replace: true });
+      }
     } catch {
       setError('Verification failed. Please check your connection and try again.');
     } finally {

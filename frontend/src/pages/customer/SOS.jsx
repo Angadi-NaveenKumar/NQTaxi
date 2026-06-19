@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ShieldAlert, Phone, MapPin, Share2, MessageSquare, AlertTriangle, ChevronLeft, ShieldCheck, User } from 'lucide-react';
-import { Button, Card } from '../components/ui';
+import { Button, Card } from '../../components/ui';
 
 export default function SOS() {
   const navigate = useNavigate();

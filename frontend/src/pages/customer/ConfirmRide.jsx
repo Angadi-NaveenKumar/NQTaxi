@@ -1,7 +1,7 @@
 import { FaCarSide, FaTaxi } from 'react-icons/fa';
-import { PageHeader } from '../components/Header';
-import RouteSummary from '../components/RouteSummary';
-import MapView from '../components/MapView';
+import { PageHeader } from '../../components/customer/Header';
+import RouteSummary from '../../components/customer/RouteSummary';
+import MapView from '../../components/customer/MapView';
 
 const ICON_MAP = {
   mini: FaCarSide,

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navigation, Shield, Wallet, Car, ArrowRight } from 'lucide-react';
-import { useAppStore } from '../store/useAppStore';
-import { Button, Card } from '../components/ui';
+import { useAppStore } from '../../store/useAppStore';
+import { Button, Card } from '../../components/ui';
 
 const slides = [
   {

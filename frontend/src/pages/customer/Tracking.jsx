@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, MapPin, Flag, Phone, MessageCircle, Star, Shield, User } from 'lucide-react';
-import { Button, Card } from '../components/ui';
-import { useAppStore } from '../store/useAppStore';
+import { Button, Card } from '../../components/ui';
+import { useAppStore } from '../../store/useAppStore';
 
 export default function Tracking() {
   const navigate = useNavigate();

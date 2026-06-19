@@ -1,165 +1,193 @@
 import { useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useAppStore } from '../store/useAppStore';
-import { Button, Card, Input, Checkbox } from '../components/ui';
-import { User, ShieldCheck, Mail, Lock, Eye, EyeOff, Car } from 'lucide-react';
-import { initiateLogin } from '../services/authService';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppStore } from '../../store/useAppStore';
+import { Button, Card, Checkbox, Input } from '../../components/ui';
+import { Car, Eye, EyeOff, Lock, Mail, MapPin } from 'lucide-react';
+import { initiateLogin } from '../../services/authService';
+
+const DEMO_CREDENTIALS = {
+  email: 'demo.customer@nqtaxi.com',
+  password: 'Demo@123',
+};
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState('rider');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const navigate = useNavigate();
-  const location = useLocation();
-  const { setRole: setRoleStore, setAuthenticated } = useAppStore();
-  const successMessage = location.state?.message;
+  const { setRole, setAuthenticated } = useAppStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    
-    if (!email || !password) {
-      setError('Please fill in all fields');
+
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter email and password.');
       return;
     }
 
     setLoading(true);
     try {
       const result = await initiateLogin(email, password);
-      if (!result.success) {
+      if (result.success) {
+        const userRole = result.user.role;
+        setRole(userRole);
+        setAuthenticated(true);
+        setLoading(false);
+        if (userRole === 'driver') {
+          navigate('/driver', { replace: true });
+        } else if (userRole === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      } else {
         setError(result.error);
-        return;
+        setLoading(false);
       }
-      const activeRole = result.user?.role || role;
-      setRoleStore(activeRole);
-      setAuthenticated(true);
-      navigate('/', { replace: true });
-    } catch {
-      setError('Unable to sign in. Please check your connection and try again.');
-    } finally {
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        {/* Logo & Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center p-3 bg-primary rounded-2xl text-primary-foreground shadow-lg shadow-primary/20">
-            <Car size={32} />
-          </div>
-          <div className="space-y-1">
-            <h1 className="text-4xl font-extrabold tracking-tight">Welcome Back</h1>
-            <p className="text-text-secondary">Sign in to your premium NQTaxi account</p>
-          </div>
-        </div>
-
-        <Card className="p-8 space-y-6 border-primary/10 shadow-2xl shadow-primary/5">
-          {/* Role Selection */}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { id: 'rider', label: 'Customer', icon: User },
-              { id: 'driver', label: 'Driver', icon: ShieldCheck },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setRole(item.id)}
-                className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border transition-all ${
-                  role === item.id
-                    ? "bg-primary/10 border-primary text-primary font-bold"
-                    : "bg-surface-elevated border-white/5 text-text-secondary hover:border-white/20"
-                }`}
-              >
-                <item.icon size={18} />
-                <span className="text-sm">{item.label}</span>
-              </button>
-            ))}
+    <div className="min-h-screen bg-black p-4 text-white md:p-8">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-[28px] bg-[#050505] shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:min-h-[calc(100vh-4rem)] md:grid-cols-[0.95fr_1.05fr]">
+        <section className="relative flex min-h-[360px] flex-col justify-between overflow-hidden bg-[#07111f] p-8 text-white md:p-12">
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-[linear-gradient(180deg,transparent,#020712)]" />
+            <div className="absolute bottom-16 left-10 h-32 w-6 rounded-t-full bg-white/10" />
+            <div className="absolute bottom-16 left-24 h-48 w-8 rounded-t-full bg-white/10" />
+            <div className="absolute bottom-16 left-40 h-28 w-7 rounded-t-full bg-white/10" />
+            <div className="absolute bottom-16 right-20 h-44 w-8 rounded-t-full bg-white/10" />
+            <div className="absolute bottom-16 right-36 h-28 w-6 rounded-t-full bg-white/10" />
           </div>
 
-          {successMessage && (
-            <p className="text-sm text-success font-medium text-center bg-success/10 border border-success/20 rounded-xl py-3 px-4">
-              {successMessage}
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-black">
+              <MapPin size={28} fill="currentColor" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black leading-none tracking-normal">
+                NQ<span className="text-primary">TAXI</span>
+              </h1>
+              <p className="mt-1 text-sm text-white/70">Safe Rides, Anytime</p>
+            </div>
+          </div>
+
+          <div className="relative z-10 max-w-sm">
+            <p className="mb-4 h-1 w-14 rounded-full bg-primary" />
+            <h2 className="text-4xl font-black leading-tight tracking-normal md:text-5xl">
+              Ride Easy.
+              <br />
+              Ride Safe.
+              <br />
+              Ride <span className="text-primary">NQTAXI</span>
+            </h2>
+            <p className="mt-5 text-base leading-7 text-white/75">
+              Book rides instantly, track in real-time and reach your destination safely.
             </p>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-5">
-            <Input
-              label="Email or Mobile Number"
-              icon={Mail}
-              type="text"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={error && !email ? 'This field is required' : ''}
-            />
-
-            <Input
-              label="Password"
-              icon={Lock}
-              type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              suffix={
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-text-secondary hover:text-text-primary transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              }
-              error={error && !password ? 'Password is required' : ''}
-            />
-
-            <div className="flex items-center justify-between">
-              <Checkbox label="Remember me" />
-              <Link to="/forgot-password" size="sm" className="text-sm font-bold text-primary hover:underline">
-                Forgot Password?
-              </Link>
-            </div>
-
-            {error && email && password && (
-              <p className="text-sm text-error font-medium text-center">{error}</p>
-            )}
-
-            <Button type="submit" className="w-full py-4 text-lg" loading={loading}>
-              Sign In
-            </Button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/5"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-surface-secondary px-4 text-text-secondary font-bold">Or continue with</span>
-            </div>
           </div>
 
-          {/* <div className="grid grid-cols-2 gap-4">
-            <Button variant="secondary" className="py-3">
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 grayscale" />
-              Google
-            </Button>
-            <Button variant="secondary" className="py-3">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.702z"/></svg>
-              Apple
-            </Button>
-          </div> */}
-        </Card>
+          <div className="relative z-10">
+            <div className="relative h-32 max-w-md">
+              <div className="absolute bottom-5 left-10 h-16 w-56 rounded-[28px] bg-primary shadow-[0_16px_40px_rgba(245,197,24,0.3)]" />
+              <div className="absolute bottom-16 left-24 h-12 w-28 rounded-t-[28px] bg-primary" />
+              <Car className="absolute bottom-8 left-24 h-20 w-40 text-black" strokeWidth={1.5} />
+              <div className="absolute bottom-2 left-20 h-12 w-12 rounded-full border-8 border-[#07111f] bg-[#111827]" />
+              <div className="absolute bottom-2 left-56 h-12 w-12 rounded-full border-8 border-[#07111f] bg-[#111827]" />
+            </div>
+          </div>
+        </section>
 
-        <p className="text-center text-sm text-text-secondary">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-primary font-bold hover:underline">
-            Create Account
-          </Link>
-        </p>
+        <section className="flex items-center justify-center bg-black p-6 md:p-12">
+          <div className="w-full max-w-md">
+            <div className="mb-8">
+              <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-black shadow-[0_14px_30px_rgba(245,197,24,0.35)]">
+                <MapPin size={30} fill="currentColor" />
+              </div>
+              <h2 className="text-3xl font-black tracking-normal text-white">Welcome Back</h2>
+              <p className="mt-2 text-sm text-white/65">Login to continue to NQTAXI</p>
+            </div>
+
+            <Card className="border-white/10 bg-[#0f0f0f] p-0 shadow-none">
+              <form onSubmit={handleLogin} className="space-y-5">
+                <Input
+                  label="Email"
+                  icon={Mail}
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={error && !email.trim() ? 'Email is required' : ''}
+                />
+
+                <Input
+                  label="Password"
+                  icon={Lock}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  suffix={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((value) => !value)}
+                      className="text-white/60 hover:text-white"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  }
+                  error={error && !password.trim() ? 'Password is required' : ''}
+                />
+
+                <div className="flex items-center justify-between">
+                  <Checkbox label="Remember me" />
+                  <Link to="/forgot-password" className="text-sm font-bold text-primary hover:text-white">
+                    Forgot Password?
+                  </Link>
+                </div>
+
+                {error && email.trim() && password.trim() && (
+                  <p className="rounded-xl bg-danger/10 px-4 py-3 text-center text-sm font-semibold text-danger">
+                    {error}
+                  </p>
+                )}
+
+                <Button type="submit" className="w-full rounded-xl py-4 text-base" loading={loading}>
+                  Login
+                </Button>
+              </form>
+            </Card>
+
+            <div className="mt-5 rounded-2xl border border-white/10 bg-[#0f0f0f] px-4 py-3 text-sm text-white/65">
+              <p className="mb-2 font-bold text-white">Demo credentials</p>
+              <p>
+                Email:{' '}
+                <code className="rounded bg-black px-1.5 py-0.5 text-xs font-bold text-primary">
+                  {DEMO_CREDENTIALS.email}
+                </code>
+              </p>
+              <p className="mt-1">
+                Password:{' '}
+                <code className="rounded bg-black px-1.5 py-0.5 text-xs font-bold text-primary">
+                  {DEMO_CREDENTIALS.password}
+                </code>
+              </p>
+            </div>
+
+            <p className="mt-8 text-center text-sm text-white/65">
+              New User?{' '}
+              <Link to="/register" className="font-bold text-primary hover:text-white">
+                Register Here
+              </Link>
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );

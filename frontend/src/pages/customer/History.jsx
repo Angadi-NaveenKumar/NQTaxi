@@ -1,4 +1,4 @@
-import { Card } from '../components/ui';
+import { Card } from '../../components/ui';
 import { Clock, MapPin, ChevronRight } from 'lucide-react';
 
 const rides = [

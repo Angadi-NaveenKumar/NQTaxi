@@ -4,7 +4,7 @@ import {
   HiOutlinePlus,
   HiOutlineDotsHorizontal,
 } from 'react-icons/hi';
-import { SAVED_PLACES } from '../data/locations';
+import { SAVED_PLACES } from '../../data/locations';
 
 const ACTIONS = [
   { id: 'home', label: 'Home', icon: HiOutlineHome, subtitle: SAVED_PLACES.home.address },

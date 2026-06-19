@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { fleetMetrics, fleetVehicles } from '../../data/vehicles';
-import AdminLayout from '../../components/layout/AdminLayout';
+import AdminLayout from '../../layouts/AdminLayout';
 import FleetFilterPanel from '../../components/admin/FleetFilterPanel';
 import FleetTable from '../../components/admin/FleetTable';
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { PageHeader } from '../components/Header';
-import RouteSummary from '../components/RouteSummary';
-import RideCard from '../components/RideCard';
-import PaymentRow from '../components/PaymentRow';
-import { RIDE_TYPES } from '../data/rides';
+import { PageHeader } from '../../components/customer/Header';
+import RouteSummary from '../../components/customer/RouteSummary';
+import RideCard from '../../components/customer/RideCard';
+import PaymentRow from '../../components/customer/PaymentRow';
+import { RIDE_TYPES } from '../../data/rides';
 
 export default function RideOptions({
   pickup,

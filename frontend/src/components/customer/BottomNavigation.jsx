@@ -1,34 +1,73 @@
-import {
-  HiOutlineHome,
-  HiOutlineClipboardList,
-  HiOutlineCreditCard,
-  HiOutlineUser,
-} from 'react-icons/hi';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { bottomNavItems } from './NavigationConfig';
+import { clsx } from 'clsx';
 
-const TABS = [
-  { id: 'home', label: 'Home', icon: HiOutlineHome },
-  { id: 'bookings', label: 'Bookings', icon: HiOutlineClipboardList },
-  { id: 'wallet', label: 'Wallet', icon: HiOutlineCreditCard },
-  { id: 'profile', label: 'Profile', icon: HiOutlineUser },
-];
+export default function BottomNavigation({ activeItem, onMoreClick }) {
+  const location = useLocation();
 
-export default function BottomNavigation({ active = 'home' }) {
   return (
-    <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 border-t border-input bg-card px-2 pb-safe pt-2">
-      <div className="grid grid-cols-4 gap-1">
-        {TABS.map(({ id, label, icon: Icon }) => {
-          const isActive = active === id;
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-xl border-t border-border pb-safe">
+      <div className="flex items-center justify-around px-2 py-2">
+        {bottomNavItems.map((item) => {
+          const isActive = activeItem === item.id || (item.path && location.pathname === item.path);
+          const Icon = item.icon;
+
+          if (item.action) {
+            return (
+              <button
+                key={item.id}
+                onClick={onMoreClick}
+                className={clsx(
+                  'flex flex-col items-center justify-center w-16 h-16 rounded-2xl transition-all duration-300',
+                  isActive
+                    ? 'text-primary'
+                    : 'text-muted hover:text-text hover:bg-elevated/50'
+                )}
+                aria-label={item.label}
+              >
+                <div className="flex flex-col items-center gap-1">
+                  <Icon
+                    size={24}
+                    className={clsx(
+                      'transition-all duration-300',
+                      isActive && 'scale-110'
+                    )}
+                  />
+                  <span className="text-[10px] font-medium">{item.label}</span>
+                </div>
+              </button>
+            );
+          }
+
           return (
-            <button
-              key={id}
-              type="button"
-              className="flex flex-col items-center gap-1 py-2"
+            <Link
+              key={item.id}
+              to={item.path}
+              className={clsx(
+                'flex flex-col items-center justify-center w-16 h-16 rounded-2xl transition-all duration-300',
+                isActive
+                  ? 'text-primary'
+                  : 'text-muted hover:text-text hover:bg-elevated/50'
+              )}
+              aria-label={item.label}
             >
-              <Icon className={`text-xl ${isActive ? 'text-primary' : 'text-muted'}`} />
-              <span className={`text-[10px] font-semibold ${isActive ? 'text-primary' : 'text-muted'}`}>
-                {label}
-              </span>
-            </button>
+              <div className="flex flex-col items-center gap-1">
+                <div className={clsx(
+                  'flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300',
+                  isActive && 'bg-primary/20'
+                )}>
+                  <Icon
+                    size={isActive ? 22 : 24}
+                    className={clsx(
+                      'transition-all duration-300',
+                      isActive && 'scale-110'
+                    )}
+                  />
+                </div>
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </div>
+            </Link>
           );
         })}
       </div>
