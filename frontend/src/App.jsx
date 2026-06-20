@@ -202,17 +202,17 @@ function App() {
 
     if (step === "spinner") return <BookingSpinner onComplete={() => {}} />;
 
-if (step === "driverOnWay") {
-  return (
-    <DriverOnTheWay
-      onCall={() => alert("Calling driver...")}
-      onMessage={() => alert("Messaging driver...")}
-      onShare={() => alert("Sharing ride details...")}
-      onCancel={() => setStep("home")}
-      onRideStarted={() => setStep("inProgress")}
-    />
-  );
-}
+    if (step === "driverOnWay") {
+      return (
+        <DriverOnTheWay
+          onCall={() => alert("Calling driver...")}
+          onMessage={() => alert("Messaging driver...")}
+          onShare={() => alert("Sharing ride details...")}
+          onCancel={() => setStep("home")}
+          onRideStarted={() => setStep("inProgress")}
+        />
+      );
+    }
 
     if (step === "inProgress") {
       return (
@@ -524,7 +524,7 @@ function RatingComplete({ onSubmit }) {
           onClick={() => onSubmit({ rating, comment })}
           className="mt-6 w-full rounded-2xl bg-primary py-4 font-bold text-black"
         >
-          Submit & Finish
+          Submit &amp; Finish
         </button>
       </main>
     </div>
@@ -532,4 +532,3 @@ function RatingComplete({ onSubmit }) {
 }
 
 export default App;
-
