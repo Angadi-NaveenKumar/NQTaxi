@@ -1,4 +1,4 @@
-import { Card } from '../components/ui';
+import { Card } from '../../components/ui';
 import { Bell, Gift, ShieldAlert, Star } from 'lucide-react';
 
 const notifications = [

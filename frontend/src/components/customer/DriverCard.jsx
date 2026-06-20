@@ -1,6 +1,6 @@
 import { FaPhoneAlt, FaStar } from 'react-icons/fa';
 import { HiOutlineChatAlt2 } from 'react-icons/hi';
-import { DRIVER } from '../data/drivers';
+import { DRIVER } from '../../data/drivers';
 
 export default function DriverCard({ onCall, onMessage, compact = false }) {
   const initials = DRIVER.name

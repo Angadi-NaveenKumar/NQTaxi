@@ -1,5 +1,5 @@
-import { Card, Button } from '../components/ui';
-import { useAppStore } from '../store/useAppStore';
+import { Card, Button } from '../../components/ui';
+import { useAppStore } from '../../store/useAppStore';
 import { Plus, ArrowUpRight, ArrowDownLeft, CreditCard } from 'lucide-react';
 
 const transactions = [

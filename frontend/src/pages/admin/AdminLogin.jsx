@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { mockLogin } from '../../services/auth/mockLogin';
-import { saveSession } from '../../services/auth/session';
+import { mockLogin } from '../../services/mockLogin';
+import { saveSession } from '../../services/session';
 
 const inputClass =
   'w-full rounded-[0.625rem] border border-white/10 bg-bg-tertiary px-[0.9rem] py-[0.7rem] font-sans text-[0.9375rem] text-text-primary outline-none transition-[border-color,box-shadow] placeholder:text-text-secondary placeholder:opacity-70 focus:border-primary focus:shadow-[0_0_0_3px_rgba(245,197,24,0.25)] disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-danger/35';

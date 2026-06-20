@@ -1,7 +1,7 @@
 import { recentBookings } from '../../data/bookings';
 import RecentBookingsTable from '../../components/admin/RecentBookingsTable';
 import LiveTrackingCard from '../../components/admin/LiveTrackingCard';
-import AdminLayout from '../../components/layout/AdminLayout';
+import AdminLayout from '../../layouts/AdminLayout';
 
 export default function DashboardView({ email, onLogout, onNavigate }) {
   const completed = recentBookings.filter((b) => b.status === 'completed').length;

@@ -18,7 +18,7 @@ export default function AdminLayout({
         title="Log out"
         aria-label="Log out"
       >
-        Exit
+       Log Out
       </button>
     </div>
   );

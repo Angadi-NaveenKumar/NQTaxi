@@ -1,6 +1,6 @@
-import MapView from '../components/MapView';
-import DriverCard from '../components/DriverCard';
-import TripStats from '../components/TripStats';
+import MapView from '../../components/customer/MapView';
+import DriverCard from '../../components/customer/DriverCard';
+import TripStats from '../../components/customer/TripStats';
 
 export default function RideInProgress({ ride, onCall, onMessage, onEndRide }) {
   return (

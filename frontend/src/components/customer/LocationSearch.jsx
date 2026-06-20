@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { HiOutlineSearch, HiOutlineHeart } from 'react-icons/hi';
-import { LOCATION_SUGGESTIONS } from '../data/locations';
+import { LOCATION_SUGGESTIONS } from '../../data/locations';
 
 function filterLocations(query) {
   const q = query.trim().toLowerCase();
-  if (!q) return LOCATION_SUGGESTIONS;
+  if (q.length < 2) return [];
   return LOCATION_SUGGESTIONS.filter((loc) => loc.toLowerCase().includes(q));
 }
 
@@ -56,11 +56,7 @@ function LocationField({
             <li key={location} role="option" aria-selected={value === location}>
               <button
                 type="button"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  onSelectLocation(location);
-                }}
-                onTouchEnd={(e) => {
+                onPointerDown={(e) => {
                   e.preventDefault();
                   onSelectLocation(location);
                 }}
@@ -129,7 +125,7 @@ export default function LocationSearch({
       setFilteredDestination([]);
       setActiveField(null);
 
-      if (pickup.trim()) {
+      if (pickup && pickup.trim()) {
         onBothSelected?.(pickup, location);
       }
     },

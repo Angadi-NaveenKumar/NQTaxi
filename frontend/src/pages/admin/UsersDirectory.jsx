@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { directoryUsers } from '../../data/users';
-import AdminLayout from '../../components/layout/AdminLayout';
-import AdminTopbar from '../../components/layout/AdminTopbar';
+import AdminLayout from '../../layouts/AdminLayout';
+import AdminTopbar from '../../layouts/AdminTopbar';
 import UserCard from '../../components/admin/UserCard';
 
 export default function UsersDirectory({ email, onLogout, onNavigate }) {

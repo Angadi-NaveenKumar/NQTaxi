@@ -103,3 +103,4 @@ export default function AdminSidebar({ activePage, onNavigate }) {
     </aside>
   );
 }
+AdminSidebar.jsx

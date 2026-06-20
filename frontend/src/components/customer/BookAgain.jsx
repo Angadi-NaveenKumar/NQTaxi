@@ -1,11 +1,9 @@
-import { RECENT_TRIPS } from '../data/locations';
-
-export default function BookAgain({ onSelectTrip }) {
+export default function BookAgain({ onSelectTrip, recentTrips = [] }) {
   return (
     <div className="space-y-2">
       <h2 className="text-base font-bold text-foreground">Book Again</h2>
       <div className="space-y-2.5">
-        {RECENT_TRIPS.map((trip) => (
+        {recentTrips.map((trip) => (
           <button
             key={trip.id}
             type="button"
@@ -27,3 +25,7 @@ export default function BookAgain({ onSelectTrip }) {
     </div>
   );
 }
+
+
+
+

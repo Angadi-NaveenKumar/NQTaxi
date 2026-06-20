@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button, Card, Input, Checkbox } from '../components/ui';
+import { Button, Card, Input, Checkbox } from '../../components/ui';
 import { User, Mail, Lock, Phone, ShieldCheck, Car, ChevronRight, CheckCircle2 } from 'lucide-react';
-import { initiateRegistration } from '../services/authService';
+import { initiateRegistration } from '../../services/authService';
 
 export default function Register() {
   const [formData, setFormData] = useState({

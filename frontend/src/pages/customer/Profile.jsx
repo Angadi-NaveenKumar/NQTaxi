@@ -1,8 +1,8 @@
-import { useAppStore } from '../store/useAppStore';
-import { Button, Card } from '../components/ui';
+import { useAppStore } from '../../store/useAppStore';
+import { Button, Card } from '../../components/ui';
 import { User, Settings, Shield, LogOut, ChevronRight, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../services/authService';
+import { logout } from '../../services/authService';
 
 export default function Profile() {
   const { role, setAuthenticated } = useAppStore();
@@ -28,10 +28,10 @@ export default function Profile() {
           <div className="absolute bottom-0 right-0 p-1.5 bg-success rounded-full border-2 border-background" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold">Shaik Abdul</h1>
+          <h1 className="text-3xl font-bold">User Demo</h1>
           <p className="text-text-secondary flex items-center gap-2">
-            <span className="capitalize px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold">{role}</span>
-            • Joined June 2024
+            <span className="capitalize px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold"></span>
+          Joined June 2024
           </p>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function Profile() {
           <div className="p-2 bg-surface-elevated rounded-lg text-text-secondary"><Mail size={18} /></div>
           <div>
             <p className="text-xs text-text-secondary font-medium">Email Address</p>
-            <p className="text-sm font-bold">shaik@example.com</p>
+            <p className="text-sm font-bold">user@example.com</p>
           </div>
         </Card>
         <Card className="flex items-center gap-3 p-4">
