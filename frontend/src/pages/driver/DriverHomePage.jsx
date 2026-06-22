@@ -23,11 +23,11 @@ import {
   Truck,
   Gift,
 } from 'lucide-react';
-import BottomNavigation from '../../components/driver/BottomNavigation';
-import MoreDrawer from '../../components/driver/MoreDrawer';
-import SidebarNavigation from '../../components/driver/SidebarNavigation';
+import BottomNavigation from '../../components/driver/DriverBottomNavigation';
+import MoreDrawer from '../../components/driver/DriverMoreDrawer';
+import SidebarNavigation from '../../components/driver/SideNavigation';
 import DriverStatusCard from '../../components/driver/DriverStatusCard';
-import RideInProgress from '../../components/driver/RideInProgress';
+import RideInProgress from '../../components/driver/RiderProgress';
 import TripCompletion from '../../components/driver/TripCompletion';
 import PaymentConfirmation from '../../components/driver/PaymentConfirmation';
 import CustomerRating from '../../components/driver/CustomerRating';

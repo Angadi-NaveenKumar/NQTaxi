@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { moreMenuItems } from './NavigationConfig';
+import { moreMenuItems } from './DriverNavigationConfig';
 import { clsx } from 'clsx';
 import { X } from 'lucide-react';
 
