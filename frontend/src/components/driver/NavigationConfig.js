@@ -1,56 +1,30 @@
-
 import {
-  Home,
-  Car,
-  Route,
-  IndianRupee,
-  Grid3x3,
-  Wallet,
-  Gift,
-  Truck,
   FileText,
-  HelpCircle,
-  ShieldAlert,
-  Settings,
-  LogOut,
+  Navigation,
+  CheckCircle,
+  CreditCard,
+  MessageSquare,
+  Star,
 } from 'lucide-react';
 
 export const bottomNavItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/driver/dashboard' },
-  { id: 'requests', label: 'Requests', icon: Car, path: '/driver/new-request' },
-  { id: 'trips', label: 'Trips', icon: Route, path: '#' },
-  { id: 'earnings', label: 'Earnings', icon: IndianRupee, path: '#' },
-  { id: 'more', label: 'More', icon: Grid3x3, action: true },
+  { id: 'ride-in-progress', label: 'Ride', icon: Navigation, path: '/driver/dashboard#ride-in-progress' },
+  { id: 'trip-completion', label: 'Complete', icon: CheckCircle, path: '/driver/dashboard#trip-completion' },
+  { id: 'trip-details', label: 'Details', icon: FileText, path: '/driver/dashboard#trip-details' },
+  { id: 'payment-confirmation', label: 'Payment', icon: CreditCard, path: '/driver/dashboard#payment-confirmation' },
+  { id: 'customer-rating', label: 'Rating', icon: Star, path: '/driver/dashboard#customer-rating' },
 ];
 
 export const moreMenuItems = {
-  driverFeatures: [
-    { id: 'wallet', label: 'Wallet', icon: Wallet, path: '/driver/wallet' },
-    { id: 'incentives', label: 'Incentives', icon: Gift, path: '#' },
-    { id: 'vehicle', label: 'Vehicle', icon: Truck, path: '#' },
-    { id: 'documents', label: 'Documents', icon: FileText, path: '/driver/document-verification' },
-  ],
-  safetySupport: [
-    { id: 'support', label: 'Support', icon: HelpCircle, path: '#' },
-    { id: 'sos', label: 'SOS Safety', icon: ShieldAlert, path: '#' },
-  ],
-  account: [
-    { id: 'settings', label: 'Settings', icon: Settings, path: '#' },
-    { id: 'logout', label: 'Logout', icon: LogOut, action: true },
-  ],
+  driverFeatures: [],
+  safetySupport: [],
+  account: [],
 };
 
 export const sidebarNavItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/driver/dashboard' },
-  { id: 'requests', label: 'Requests', icon: Car, path: '/driver/new-request' },
-  { id: 'trips', label: 'Trips', icon: Route, path: '#' },
-  { id: 'earnings', label: 'Earnings', icon: IndianRupee, path: '#' },
-  { id: 'wallet', label: 'Wallet', icon: Wallet, path: '/driver/wallet' },
-  { id: 'incentives', label: 'Incentives', icon: Gift, path: '#' },
-  { id: 'vehicle', label: 'Vehicle', icon: Truck, path: '#' },
-  { id: 'documents', label: 'Documents', icon: FileText, path: '/driver/document-verification' },
-  { id: 'support', label: 'Support', icon: HelpCircle, path: '#' },
-  { id: 'sos', label: 'SOS Safety', icon: ShieldAlert, path: '#' },
-  { id: 'settings', label: 'Settings', icon: Settings, path: '#' },
+  { id: 'ride-in-progress', label: 'Rider Progress', icon: Navigation, path: '/driver/dashboard#ride-in-progress' },
+  { id: 'trip-completion', label: 'Trip Completion', icon: CheckCircle, path: '/driver/dashboard#trip-completion' },
+  { id: 'trip-details', label: 'Trip Details', icon: FileText, path: '/driver/dashboard#trip-details' },
+  { id: 'payment-confirmation', label: 'Payment Confirmation', icon: CreditCard, path: '/driver/dashboard#payment-confirmation' },
+  { id: 'customer-rating', label: 'Customer Rating', icon: MessageSquare, path: '/driver/dashboard#customer-rating' },
 ];
-

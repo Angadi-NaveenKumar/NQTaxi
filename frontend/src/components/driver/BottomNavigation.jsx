@@ -1,17 +1,23 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { bottomNavItems } from './NavigationConfig';
 import { clsx } from 'clsx';
 
 export default function BottomNavigation({ activeItem, onMoreClick }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/98 backdrop-blur-xl border-t border-border pb-safe">
       <div className="flex items-center justify-around px-2 py-2">
         {bottomNavItems.map((item) => {
-          const isActive = activeItem === item.id || (item.path && location.pathname === item.path);
+          const [itemPath, itemHash] = item.path?.split('#') || [];
+          const isActive = activeItem === item.id || (
+            itemHash
+              ? location.pathname === itemPath && location.hash === `#${itemHash}`
+              : item.path && location.pathname === item.path
+          );
           const Icon = item.icon;
 
           if (item.action) {
@@ -45,6 +51,15 @@ export default function BottomNavigation({ activeItem, onMoreClick }) {
             <Link
               key={item.id}
               to={item.path}
+              onClick={(event) => {
+                if (!itemHash || location.pathname !== itemPath) return;
+
+                event.preventDefault();
+                navigate(item.path);
+                setTimeout(() => {
+                  document.getElementById(itemHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 0);
+              }}
               className={clsx(
                 'flex flex-col items-center justify-center w-16 h-16 rounded-2xl transition-all duration-300',
                 isActive

@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { sidebarNavItems } from './NavigationConfig';
 import { clsx } from 'clsx';
 
 export default function SidebarNavigation() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <aside className="hidden md:flex md:flex-col md:w-72 bg-surface border-r border-border h-screen sticky top-0">
@@ -27,12 +28,24 @@ export default function SidebarNavigation() {
       {/* Nav Items */}
       <nav className="flex-1 overflow-y-auto p-4 space-y-1">
         {sidebarNavItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const [itemPath, itemHash] = item.path.split('#');
+          const isActive = itemHash
+            ? location.pathname === itemPath && location.hash === `#${itemHash}`
+            : location.pathname === item.path;
           const Icon = item.icon;
           return (
             <Link
               key={item.id}
               to={item.path}
+              onClick={(event) => {
+                if (!itemHash || location.pathname !== itemPath) return;
+
+                event.preventDefault();
+                navigate(item.path);
+                setTimeout(() => {
+                  document.getElementById(itemHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 0);
+              }}
               className={clsx(
                 'flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group',
                 isActive
