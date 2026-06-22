@@ -12,6 +12,11 @@ import BottomNavigation from './components/customer/BottomNavigation';
 import MoreDrawer from './components/customer/MoreDrawer';
 import SidebarNavigation from './components/customer/SidebarNavigation';
 
+// Driver Nav Components
+import DriverBottomNavigation from './components/driver/BottomNavigation';
+import DriverMoreDrawer from './components/driver/MoreDrawer';
+import DriverSidebarNavigation from './components/driver/SideNavigation';
+
 // Customer Pages
 import Homemapbase from './pages/customer/Homemapbase';
 import RideOptions from './pages/customer/RideOptions';
@@ -34,7 +39,12 @@ import WalletDashboard from './pages/driver/WalletDashboard';
 import DriverProfileSetup from './pages/driver/DriverProfileSetup';
 import DocumentVerification from './pages/driver/DocumentVerification';
 import DriverHomePage from './pages/driver/DriverHomePage';
-// import NewRideRequest from "./pages/driver/NewRideRequest";
+import EarningsDashboard from './pages/driver/EarningsDashboard';
+import DriverStats from './pages/driver/DriverStats';
+import TripHistory from './pages/driver/TripHistory';
+import IncentivesBonuses from './pages/driver/IncentivesBonuses';
+import BankDetailsPayouts from './pages/driver/BankDetailsPayouts';
+import NewRideRequest from "./pages/driver/NewRideRequest";
 
 // Admin Pages
 import DriverManagement from './pages/admin/DriverManagement';
@@ -73,19 +83,13 @@ function App() {
 
   useEffect(() => {
     initializeAuthService();
-    // TEMP: Clear any existing session for testing
-    logout();
-    setAuthenticated(false);
-    setRole('rider');
-    resetDriverState();
-    // Uncomment below to restore session functionality
-    // const sessionData = restoreAuthSession();
-    // if (sessionData) {
-    //   setAuthenticated(true);
-    //   setRole(sessionData.session.role);
-    // } else {
-    //   setAuthenticated(false);
-    // }
+    const sessionData = restoreAuthSession();
+    if (sessionData) {
+      setAuthenticated(true);
+      setRole(sessionData.session.role);
+    } else {
+      setAuthenticated(false);
+    }
     setAuthReady(true);
   }, [setAuthenticated, setRole]);
 
@@ -145,9 +149,14 @@ function App() {
         {/* Driver Routes */}
         <Route path="/driver/profile-setup" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverProfileGuard><DriverProfileSetup /></DriverProfileGuard></ProtectedRoute>} />
         <Route path="/driver/document-verification" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverDocumentGuard><DocumentVerification /></DriverDocumentGuard></ProtectedRoute>} />
-        <Route path="/driver/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverHomePage /></DriverWorkflowGuard></ProtectedRoute>} />
-        {/* <Route path="/driver/new-request" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><NewRideRequest /></ProtectedRoute>} /> */}
-        <Route path="/driver/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><WalletDashboard /></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverHomePage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/new-request" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><NewRideRequest /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><WalletDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/earnings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><EarningsDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/stats" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverStats /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/history" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><TripHistory /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/incentives" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><IncentivesBonuses /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/payouts" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><BankDetailsPayouts /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><AdminDashboardRoute /></ProtectedRoute>} />
@@ -438,6 +447,55 @@ function useAdminNavigate() {
     };
     navigate(routes[pageId] || "/admin");
   };
+}
+
+function DriverLayout({ children }) {
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const { setAuthenticated, setRole, resetDriverState } = useAppStore();
+
+  const handleLogout = () => {
+    logout();
+    setAuthenticated(false);
+    setRole('rider');
+    resetDriverState();
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0D0D0D] flex flex-col md:flex-row text-white">
+      {/* Sidebar (Tablet/Desktop) */}
+      <DriverSidebarNavigation />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Mobile Header */}
+        <div className="md:hidden sticky top-0 z-40 border-b border-gray-800 bg-[#1A1A1A]/95 px-4 py-3 backdrop-blur-sm flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg className="w-8 h-8" viewBox="0 0 44 30" fill="none">
+              <rect x="3" y="12" width="38" height="14" rx="4" fill="#F5C518" stroke="#1A1A1A" strokeWidth="1.5" />
+              <path d="M10 12 L14 6 H30 L34 12 Z" fill="#F5C518" stroke="#1A1A1A" strokeWidth="1.5" />
+            </svg>
+            <span className="text-xl font-bold text-primary">NQTaxi</span>
+          </div>
+          <span className="text-xs text-muted">Driver Portal</span>
+        </div>
+
+        {/* Page Content */}
+        <main className="flex-1 p-0 pb-24 md:pb-6 md:p-6 overflow-y-auto">{children}</main>
+      </div>
+
+      {/* Bottom Navigation (Mobile) */}
+      <div className="md:hidden">
+        <DriverBottomNavigation onMoreClick={() => setIsMoreMenuOpen(true)} />
+      </div>
+
+      {/* More Menu Drawer */}
+      <DriverMoreDrawer
+        isOpen={isMoreMenuOpen}
+        onClose={() => setIsMoreMenuOpen(false)}
+        onLogout={handleLogout}
+      />
+    </div>
+  );
 }
 
 function Layout({ children }) {

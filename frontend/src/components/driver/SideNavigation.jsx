@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { sidebarNavItems } from './DriverNavigationConfig';
+import { sidebarNavItems } from './NavigationConfig';
 import { clsx } from 'clsx';
 
 export default function SidebarNavigation() {
