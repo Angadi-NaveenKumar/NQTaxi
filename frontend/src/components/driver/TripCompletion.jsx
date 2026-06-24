@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, CheckCircle } from 'lucide-react';
 
 export default function TripCompletion() {
+  const navigate = useNavigate();
   const completedTrip = {
     totalDistance: '12.4 km',
     totalDuration: '34 min',
@@ -38,7 +40,10 @@ export default function TripCompletion() {
             <div className="text-lg font-bold text-primary mt-1">{completedTrip.fareAmount}</div>
           </div>
         </div>
-        <button className="w-full bg-success text-white py-3 px-4 rounded-2xl font-bold hover:bg-success/80 transition-colors active:scale-95 flex items-center justify-center gap-2">
+        <button
+          onClick={() => navigate("/driver/payment-confirmation")}
+          className="w-full bg-success text-white py-3 px-4 rounded-2xl font-bold hover:bg-success/80 transition-colors active:scale-95 flex items-center justify-center gap-2"
+        >
           <Check size={18} />
           Finish Ride
         </button>

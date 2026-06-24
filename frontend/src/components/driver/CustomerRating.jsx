@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MessageSquare, Star } from 'lucide-react';
 
 export default function CustomerRating() {
+  const navigate = useNavigate();
   const [customerRating, setCustomerRating] = useState(0);
   const [customerFeedback, setCustomerFeedback] = useState('');
   const customerName = 'Aarav Sharma';
@@ -42,7 +44,10 @@ export default function CustomerRating() {
             className="w-full resize-none bg-elevated border border-border rounded-2xl p-4 text-text placeholder:text-muted focus:outline-none focus:border-primary/60"
           />
         </div>
-        <button className="w-full bg-primary text-primary-fg py-3 px-4 rounded-2xl font-bold hover:bg-primary/90 transition-colors active:scale-95 flex items-center justify-center gap-2">
+        <button
+          onClick={() => navigate("/driver/dashboard")}
+          className="w-full bg-primary text-primary-fg py-3 px-4 rounded-2xl font-bold hover:bg-primary/90 transition-colors active:scale-95 flex items-center justify-center gap-2"
+        >
           <MessageSquare size={18} />
           Submit Rating
         </button>

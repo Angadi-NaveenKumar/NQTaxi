@@ -125,6 +125,15 @@ export default function NavigationToPickup() {
                 <p>Please wait for the passenger to board.</p>
               </div>
             </div>
+            <button
+              onClick={() => {
+                setShowArrivedModal(false);
+                navigate("/driver/rider-progress");
+              }}
+              className="w-full py-2.5 rounded-xl bg-primary text-primary-fg font-bold text-sm hover:bg-primary/90 transition-colors"
+            >
+              Start Passenger Boarding
+            </button>
           </div>
         </div>
       )}

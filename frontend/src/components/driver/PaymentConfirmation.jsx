@@ -1,7 +1,9 @@
 import React from 'react';
-import { CreditCard } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CreditCard, Check } from 'lucide-react';
 
 export default function PaymentConfirmation() {
+  const navigate = useNavigate();
   const paymentSummary = {
     paymentMethod: 'UPI',
     totalFare: 'Rs. 286',
@@ -39,6 +41,13 @@ export default function PaymentConfirmation() {
             <span className="font-bold text-primary">{paymentSummary.driverEarnings}</span>
           </div>
         </div>
+        <button
+          onClick={() => navigate("/driver/customer-rating")}
+          className="w-full mt-4 bg-primary text-primary-fg py-3 px-4 rounded-2xl font-bold hover:bg-primary/90 transition-colors active:scale-95 flex items-center justify-center gap-2"
+        >
+          <Check size={18} />
+          Confirm & Rate Customer
+        </button>
       </div>
     </div>
   );

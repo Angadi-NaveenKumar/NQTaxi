@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Car, Clock, Flag, MapPin, Navigation, Phone } from 'lucide-react';
 
 export default function RideInProgress() {
+  const navigate = useNavigate();
   const activeTrip = {
     customerName: 'Aarav Sharma',
     customerPhone: '+91 98765 43210',
@@ -67,7 +69,10 @@ export default function RideInProgress() {
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:w-56">
-            <button className="bg-primary text-primary-fg py-3 px-4 rounded-2xl font-bold hover:bg-primary/90 transition-colors active:scale-95 flex items-center justify-center gap-2">
+            <button
+              onClick={() => navigate("/driver/trip-completion")}
+              className="bg-primary text-primary-fg py-3 px-4 rounded-2xl font-bold hover:bg-primary/90 transition-colors active:scale-95 flex items-center justify-center gap-2"
+            >
               <Car size={18} />
               Start Ride
             </button>
