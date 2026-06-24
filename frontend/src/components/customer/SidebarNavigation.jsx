@@ -13,7 +13,20 @@ export default function SidebarNavigation({ onLogout }) {
     ...moreMenuSections.flatMap((section) => section.items),
   ];
 
-  const uniqueItems = Array.from(new Map(allNavItems.map((item) => [item.id, item])).values());
+  const uniqueItems = [];
+  const seenPaths = new Set();
+  const seenIds = new Set();
+
+  for (const item of allNavItems) {
+    if (item.action && item.id === 'logout') continue;
+    if (item.path && item.path !== '#') {
+      if (seenPaths.has(item.path)) continue;
+      seenPaths.add(item.path);
+    }
+    if (seenIds.has(item.id)) continue;
+    seenIds.add(item.id);
+    uniqueItems.push(item);
+  }
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 z-40 hidden md:flex flex-col bg-surface border-r border-border transition-all duration-300">

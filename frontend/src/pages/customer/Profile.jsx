@@ -2,11 +2,19 @@ import { useAppStore } from '../../store/useAppStore';
 import { Button, Card } from '../../components/ui';
 import { User, Settings, Shield, LogOut, ChevronRight, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../services/authService';
+import { logout, restoreAuthSession } from '../../services/authService';
 
 export default function Profile() {
   const { role, setAuthenticated } = useAppStore();
   const navigate = useNavigate();
+
+  const sessionData = restoreAuthSession();
+  const user = sessionData?.user || {
+    fullName: 'User Demo',
+    email: 'user@example.com',
+    phone: '+91 98765 43210',
+    role: role,
+  };
 
   const handleLogout = () => {
     logout();
@@ -28,9 +36,9 @@ export default function Profile() {
           <div className="absolute bottom-0 right-0 p-1.5 bg-success rounded-full border-2 border-background" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold">User Demo</h1>
+          <h1 className="text-3xl font-bold">{user.fullName}</h1>
           <p className="text-text-secondary flex items-center gap-2">
-            <span className="capitalize px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold"></span>
+            <span className="capitalize px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold">{user.role}</span>
           Joined June 2024
           </p>
         </div>
@@ -41,14 +49,14 @@ export default function Profile() {
           <div className="p-2 bg-surface-elevated rounded-lg text-text-secondary"><Mail size={18} /></div>
           <div>
             <p className="text-xs text-text-secondary font-medium">Email Address</p>
-            <p className="text-sm font-bold">user@example.com</p>
+            <p className="text-sm font-bold">{user.email}</p>
           </div>
         </Card>
         <Card className="flex items-center gap-3 p-4">
           <div className="p-2 bg-surface-elevated rounded-lg text-text-secondary"><Phone size={18} /></div>
           <div>
             <p className="text-xs text-text-secondary font-medium">Phone Number</p>
-            <p className="text-sm font-bold">+91 98765 43210</p>
+            <p className="text-sm font-bold">{user.phone}</p>
           </div>
         </Card>
       </div>

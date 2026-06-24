@@ -32,24 +32,57 @@ export default function MapView({
       />
 
       <svg className="absolute inset-0 h-full w-full" aria-hidden="true">
-        <path
-          d="M0 80 Q120 60 200 90 T400 70"
-          fill="none"
-          stroke="#3a3a3a"
-          strokeWidth="8"
-          strokeLinecap="round"
-        />
+        {/* Secondary roads for grid map aesthetic */}
+        <path d="M0 80 Q120 60 200 90 T400 70" fill="none" stroke="#222" strokeWidth="12" strokeLinecap="round" />
+        <path d="M0 80 Q120 60 200 90 T400 70" fill="none" stroke="#333" strokeWidth="8" strokeLinecap="round" />
+        
+        <path d="M50 0 L120 400" fill="none" stroke="#1F1F1F" strokeWidth="8" strokeLinecap="round" />
+        <path d="M50 0 L120 400" fill="none" stroke="#2a2a2a" strokeWidth="3" strokeLinecap="round" />
+
+        <path d="M300 0 L250 400" fill="none" stroke="#1F1F1F" strokeWidth="8" strokeLinecap="round" />
+        <path d="M300 0 L250 400" fill="none" stroke="#2a2a2a" strokeWidth="3" strokeLinecap="round" />
+
+        <path d="M0 200 C100 170 250 250 400 190" fill="none" stroke="#1F1F1F" strokeWidth="8" strokeLinecap="round" />
+        <path d="M0 200 C100 170 250 250 400 190" fill="none" stroke="#2a2a2a" strokeWidth="3" strokeLinecap="round" />
+
+        {/* Primary Route Path (Vibrant Gradient Line) */}
         {showRoute && (
-          <path
-            d="M80 120 Q160 100 240 140 T380 110"
-            fill="none"
-            stroke={showDriver ? '#2196F3' : '#F5C518'}
-            strokeWidth="4"
-            strokeDasharray={showDriver ? '0' : '8 6'}
-            strokeLinecap="round"
-          />
+          <>
+            <path
+              d="M80 120 Q160 100 240 140 T380 110"
+              fill="none"
+              stroke="url(#customerRouteGradient)"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Animated dashed line overlay */}
+            <path
+              d="M80 120 Q160 100 240 140 T380 110"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeDasharray="6 8"
+              strokeLinecap="round"
+              className="animate-[dash_20s_linear_infinite]"
+            />
+          </>
         )}
+
+        <defs>
+          <linearGradient id="customerRouteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F5C518" />
+            <stop offset="100%" stopColor="#2196F3" />
+          </linearGradient>
+        </defs>
       </svg>
+      <style>{`
+        @keyframes dash {
+          to {
+            stroke-dashoffset: -1000;
+          }
+        }
+      `}</style>
 
       {showRoute && (
         <>
