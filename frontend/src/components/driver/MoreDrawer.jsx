@@ -16,7 +16,7 @@ export default function MoreDrawer({ isOpen, onClose, onLogout }) {
         onClick={onClose}
       />
       {/* Drawer */}
-      <div className="absolute bottom-0 left-0 right-0 bg-surface border-t border-border rounded-t-3xl animate-slide-in-from-bottom">
+      <div className="absolute bottom-0 left-0 right-0 bg-surface border-t border-border rounded-t-3xl animate-slide-in-from-bottom max-h-[85vh] overflow-y-auto">
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1">
           <div className="w-12 h-1.5 bg-border rounded-full" />

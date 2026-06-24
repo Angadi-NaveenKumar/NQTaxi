@@ -15,7 +15,7 @@ import SidebarNavigation from './components/customer/SidebarNavigation';
 // Driver Nav Components
 import DriverBottomNavigation from './components/driver/BottomNavigation';
 import DriverMoreDrawer from './components/driver/MoreDrawer';
-import DriverSidebarNavigation from './components/driver/SideNavigation';
+import DriverSidebarNavigation from './components/driver/SidebarNavigation';
 
 // Customer Pages
 import Homemapbase from './pages/customer/Homemapbase';
@@ -45,6 +45,13 @@ import TripHistory from './pages/driver/TripHistory';
 import IncentivesBonuses from './pages/driver/IncentivesBonuses';
 import BankDetailsPayouts from './pages/driver/BankDetailsPayouts';
 import NewRideRequest from "./pages/driver/NewRideRequest";
+import RideAccepted from "./pages/driver/RideAccepted";
+import NavigationToPickup from "./pages/driver/NavigationToPickup";
+import RiderProgressPage from "./pages/driver/RiderProgressPage";
+import TripCompletionPage from "./pages/driver/TripCompletionPage";
+import TripDetailsPage from "./pages/driver/TripDetailsPage";
+import PaymentConfirmationPage from "./pages/driver/PaymentConfirmationPage";
+import CustomerRatingPage from "./pages/driver/CustomerRatingPage";
 
 // Admin Pages
 import DriverManagement from './pages/admin/DriverManagement';
@@ -151,12 +158,19 @@ function App() {
         <Route path="/driver/document-verification" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverDocumentGuard><DocumentVerification /></DriverDocumentGuard></ProtectedRoute>} />
         <Route path="/driver/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverHomePage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/new-request" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><NewRideRequest /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/ride-accepted" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><RideAccepted /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/navigation-pickup" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><NavigationToPickup /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><WalletDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/earnings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><EarningsDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/stats" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverStats /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/history" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><TripHistory /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/incentives" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><IncentivesBonuses /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
         <Route path="/driver/payouts" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><BankDetailsPayouts /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/rider-progress" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><RiderProgressPage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/trip-completion" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><TripCompletionPage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/trip-details" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><TripDetailsPage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/payment-confirmation" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><PaymentConfirmationPage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/customer-rating" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><CustomerRatingPage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><AdminDashboardRoute /></ProtectedRoute>} />
@@ -463,7 +477,7 @@ function DriverLayout({ children }) {
   return (
     <div className="min-h-screen bg-[#0D0D0D] flex flex-col md:flex-row text-white">
       {/* Sidebar (Tablet/Desktop) */}
-      <DriverSidebarNavigation />
+      <DriverSidebarNavigation onLogout={handleLogout} />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
