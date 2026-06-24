@@ -52,6 +52,13 @@ import Reports from './pages/admin/Reports';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import DashboardView from './pages/admin/DashboardView';
+import DriverManagement from './pages/admin/DriverManagement';
+import FleetOverview from './pages/admin/FleetOverview';
+import UsersDirectory from './pages/admin/UsersDirectory';
+
+// Active Ride Pages
+import RideAccepted from './pages/driver/RideAccepted';
+import NavigationToPickup from './pages/driver/NavigationToPickup';
 
 // Components
 import BookingSpinner from './components/customer/BookingSpinner';
@@ -111,64 +118,7 @@ function App() {
     setRideData({ pickup: "", destination: "", selectedRide: sampleRide, paymentMethod: "Cash" });
   };
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><LandingPage /></PublicRoute>} />
-        <Route path="/onboarding" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><Onboarding /></PublicRoute>} />
-        <Route path="/login" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><Login /></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><Register /></PublicRoute>} />
-        <Route path="/otp-verification" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><OTPVerification /></PublicRoute>} />
-        
-        <Route path="/admin/login" element={<AdminLoginRoute />} />
-        <Route path="/driver/login" element={<DriverLoginRoute />} />
-
-        {/* Customer Routes */}
-        <Route path="/customer/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><MainContent /></Layout></ProtectedRoute>} />
-        <Route path="/customer/ride-options" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RideOptionsRoute rideData={rideData} setRideData={setRideData} /></Layout></ProtectedRoute>} />
-        <Route path="/customer/confirm-ride" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><ConfirmRideRoute rideData={rideData} /></Layout></ProtectedRoute>} />
-        <Route path="/customer/booking" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><BookingSpinner onComplete={() => {}} /></Layout></ProtectedRoute>} />
-        <Route path="/customer/driver-on-the-way" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><DriverOnTheWayRoute /></Layout></ProtectedRoute>} />
-        <Route path="/customer/ride-in-progress" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RideInProgressRoute ride={rideData.selectedRide} /></Layout></ProtectedRoute>} />
-        <Route path="/customer/rating" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RatingComplete onSubmit={onRatingSubmitted} /></Layout></ProtectedRoute>} />
-        <Route path="/customer/history" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><History /></Layout></ProtectedRoute>} />
-        <Route path="/customer/notifications" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Notifications /></Layout></ProtectedRoute>} />
-        <Route path="/customer/sos" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><SOS /></Layout></ProtectedRoute>} />
-        <Route path="/customer/tracking" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Tracking /></ProtectedRoute>} />
-        <Route path="/customer/profile" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Profile /></Layout></ProtectedRoute>} />
-        <Route path="/customer/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Wallet /></Layout></ProtectedRoute>} />
-        <Route path="/customer/profile-settings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><ProfileSettings /></Layout></ProtectedRoute>} />
-        <Route path="/customer/ratings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RatingsReviews /></Layout></ProtectedRoute>} />
-        <Route path="/customer/payments" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><SavedUpiCards /></Layout></ProtectedRoute>} />
-        <Route path="/customer/trips" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><TripCostSummary /></Layout></ProtectedRoute>} />
-        <Route path="/customer/drivers" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><div className="text-white p-6">Drivers page coming soon</div></Layout></ProtectedRoute>} />
-        <Route path="/customer/reports" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Reports /></Layout></ProtectedRoute>} />
-
-        {/* Driver Routes */}
-        <Route path="/driver/profile-setup" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverProfileGuard><DriverProfileSetup /></DriverProfileGuard></ProtectedRoute>} />
-        <Route path="/driver/document-verification" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverDocumentGuard><DocumentVerification /></DriverDocumentGuard></ProtectedRoute>} />
-        <Route path="/driver/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverHomePage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/new-request" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><NewRideRequest /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><WalletDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/earnings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><EarningsDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/stats" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverStats /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/history" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><TripHistory /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/incentives" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><IncentivesBonuses /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-        <Route path="/driver/payouts" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><BankDetailsPayouts /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
-
-        {/* Admin Routes */}
-        <Route path="/admin" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><AdminDashboardRoute /></ProtectedRoute>} />
-        <Route path="/admin/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><DashboardViewRoute /></ProtectedRoute>} />
-
-
-        {/* Catch-all redirect */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-
-  function MainContent() {
+  const renderMainContent = () => {
     if (step === "home") {
       return (
         <Homemapbase
@@ -235,8 +185,79 @@ function App() {
     if (step === "rating") return <RatingComplete onSubmit={onRatingSubmitted} />;
 
     return null;
-  }
+  };
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><LandingPage /></PublicRoute>} />
+        <Route path="/onboarding" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><Onboarding /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><Login /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><Register /></PublicRoute>} />
+        <Route path="/otp-verification" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><OTPVerification /></PublicRoute>} />
+        
+        <Route path="/admin/login" element={<AdminLoginRoute />} />
+        <Route path="/driver/login" element={<DriverLoginRoute />} />
+
+        {/* Customer Routes */}
+        <Route path="/customer/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout>{renderMainContent()}</Layout></ProtectedRoute>} />
+        <Route path="/customer/ride-options" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RideOptionsRoute rideData={rideData} setRideData={setRideData} /></Layout></ProtectedRoute>} />
+        <Route path="/customer/confirm-ride" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><ConfirmRideRoute rideData={rideData} /></Layout></ProtectedRoute>} />
+        <Route path="/customer/booking" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><BookingSpinner onComplete={() => {}} /></Layout></ProtectedRoute>} />
+        <Route path="/customer/driver-on-the-way" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><DriverOnTheWayRoute /></Layout></ProtectedRoute>} />
+        <Route path="/customer/ride-in-progress" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RideInProgressRoute ride={rideData.selectedRide} /></Layout></ProtectedRoute>} />
+        <Route path="/customer/rating" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RatingComplete onSubmit={onRatingSubmitted} /></Layout></ProtectedRoute>} />
+        <Route path="/customer/history" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><History /></Layout></ProtectedRoute>} />
+        <Route path="/customer/notifications" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Notifications /></Layout></ProtectedRoute>} />
+        <Route path="/customer/sos" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><SOS /></Layout></ProtectedRoute>} />
+        <Route path="/customer/tracking" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Tracking /></ProtectedRoute>} />
+        <Route path="/customer/profile" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Profile /></Layout></ProtectedRoute>} />
+        <Route path="/customer/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Wallet /></Layout></ProtectedRoute>} />
+        <Route path="/customer/profile-settings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><ProfileSettings /></Layout></ProtectedRoute>} />
+        <Route path="/customer/ratings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RatingsReviews /></Layout></ProtectedRoute>} />
+        <Route path="/customer/payments" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><SavedUpiCards /></Layout></ProtectedRoute>} />
+        <Route path="/customer/trips" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><TripCostSummary /></Layout></ProtectedRoute>} />
+        <Route path="/customer/drivers" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><DriverManagement /></Layout></ProtectedRoute>} />
+        <Route path="/customer/reports" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Reports /></Layout></ProtectedRoute>} />
+
+        {/* Driver Routes */}
+        <Route path="/driver/profile-setup" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverProfileGuard><DriverProfileSetup /></DriverProfileGuard></ProtectedRoute>} />
+        <Route path="/driver/document-verification" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverDocumentGuard><DocumentVerification /></DriverDocumentGuard></ProtectedRoute>} />
+        <Route path="/driver/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverHomePage /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/new-request" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><NewRideRequest /></ProtectedRoute>} /> 
+        <Route path="/driver/ride-accepted" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><RideAccepted /></ProtectedRoute>} />
+        <Route path="/driver/navigation-pickup" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><NavigationToPickup /></ProtectedRoute>} />
+        <Route path="/driver/wallet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><WalletDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/earnings" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><EarningsDashboard /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/stats" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><DriverStats /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/history" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><TripHistory /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/incentives" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><IncentivesBonuses /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+        <Route path="/driver/payouts" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="driver"><DriverWorkflowGuard><DriverLayout><BankDetailsPayouts /></DriverLayout></DriverWorkflowGuard></ProtectedRoute>} />
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><AdminDashboardRoute /></ProtectedRoute>} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><DashboardViewRoute /></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><UsersDirectoryRoute /></ProtectedRoute>} />
+        <Route path="/admin/fleet" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="admin"><FleetOverviewRoute /></ProtectedRoute>} />
+
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
+
+function UsersDirectoryRoute() {
+  const navigate = useAdminNavigate();
+  return <UsersDirectory email="admin@nqtaxi.com" onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
+}
+
+function FleetOverviewRoute() {
+  const navigate = useAdminNavigate();
+  return <FleetOverview onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
+}
+
 
 function getDriverRedirectPath(driver) {
   return "/driver/dashboard";
@@ -441,6 +462,8 @@ function useAdminNavigate() {
   return (pageId) => {
     const routes = {
       dashboard: "/admin/dashboard",
+      users: "/admin/users",
+      fleet: "/admin/fleet",
     };
     navigate(routes[pageId] || "/admin");
   };
