@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // Driver onboarding and status types
 const DRIVER_STATUS = {
@@ -95,6 +95,7 @@ export const useAppStore = create(
     }),
     {
       name: "nqtaxi-app-store",
+      storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({ driver: state.driver, role: state.role }),
     }
   )
