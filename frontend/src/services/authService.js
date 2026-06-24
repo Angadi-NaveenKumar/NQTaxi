@@ -45,7 +45,10 @@ function delay(ms) {
 
 function storageGet(key) {
   try {
-    return localStorage.getItem(key);
+    if (key === USERS_STORAGE_KEY) {
+      return localStorage.getItem(key);
+    }
+    return sessionStorage.getItem(key);
   } catch {
     return null;
   }
@@ -53,7 +56,11 @@ function storageGet(key) {
 
 function storageSet(key, value) {
   try {
-    localStorage.setItem(key, value);
+    if (key === USERS_STORAGE_KEY) {
+      localStorage.setItem(key, value);
+    } else {
+      sessionStorage.setItem(key, value);
+    }
     return true;
   } catch {
     return false;
@@ -62,7 +69,11 @@ function storageSet(key, value) {
 
 function storageRemove(key) {
   try {
-    localStorage.removeItem(key);
+    if (key === USERS_STORAGE_KEY) {
+      localStorage.removeItem(key);
+    } else {
+      sessionStorage.removeItem(key);
+    }
   } catch {
     // ignore
   }
