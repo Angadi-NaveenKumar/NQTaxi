@@ -38,51 +38,51 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 md:p-12">
-      <div className="w-full max-w-lg space-y-12">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center py-6 px-4 md:p-12 overflow-y-auto">
+      <div className="w-full max-w-lg space-y-6 md:space-y-10 flex flex-col justify-center">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 animate-in slide-in-from-top duration-700">
-          <div className="p-2 bg-primary rounded-lg text-primary-foreground">
-            <Car size={32} />
+          <div className="p-1.5 bg-primary rounded-lg text-primary-foreground">
+            <Car size={24} />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight">NQTaxi</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight">NQTaxi</h1>
         </div>
 
         {/* Card Content */}
-        <Card className="p-8 md:p-12 text-center space-y-8 animate-in zoom-in-95 duration-500">
-          <div className={`flex justify-center ${item.color} transform transition-all duration-500 scale-110`}>
-            <item.icon size={80} strokeWidth={1.5} />
+        <Card className="p-6 md:p-10 text-center space-y-6 animate-in zoom-in-95 duration-500">
+          <div className={`flex justify-center ${item.color} transform transition-all duration-500 scale-110 mx-auto w-16 h-16 md:w-20 md:h-20`}>
+            <item.icon className="w-full h-full" strokeWidth={1.5} />
           </div>
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold">{item.title}</h2>
-            <p className="text-text-secondary text-lg leading-relaxed">
+          <div className="space-y-3">
+            <h2 className="text-2xl md:text-3xl font-bold">{item.title}</h2>
+            <p className="text-text-secondary text-sm md:text-base leading-relaxed">
               {item.text}
             </p>
           </div>
         </Card>
 
         {/* Progress & Actions */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div className="flex justify-center gap-2">
             {slides.map((_, dotIndex) => (
               <div
                 key={dotIndex}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  dotIndex === index ? 'w-8 bg-primary' : 'w-2 bg-surface-elevated'
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  dotIndex === index ? 'w-6 bg-primary' : 'w-1.5 bg-surface-elevated'
                 }`}
               />
             ))}
           </div>
 
-          <div className="flex flex-col gap-4">
-            <Button className="w-full py-4 text-lg" onClick={handleNext}>
+          <div className="flex flex-col gap-3">
+            <Button className="w-full py-3 md:py-4 text-base md:text-lg" onClick={handleNext}>
               {index === slides.length - 1 ? 'Get Started' : 'Next'}
-              <ArrowRight size={20} />
+              <ArrowRight size={18} />
             </Button>
             
             <button 
               onClick={() => { setOnboarded(true); navigate('/login'); }}
-              className="text-text-secondary hover:text-text-primary transition-colors font-medium text-center"
+              className="text-text-secondary hover:text-text-primary transition-colors text-sm font-medium text-center"
             >
               Skip Introduction
             </button>

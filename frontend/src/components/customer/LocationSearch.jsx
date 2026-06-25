@@ -16,22 +16,15 @@ function LocationField({
   dotColor,
   trailingIcon,
   inputRef,
-  showDropdown,
-  suggestions,
   onChange,
   onFocusField,
-  onSelectLocation,
 }) {
   return (
-    <div className="relative">
+    <div>
       <label htmlFor={id} className="sr-only">
         {label}
       </label>
-      <div
-        className={`flex items-center gap-3 px-4 py-3.5 transition ${
-          showDropdown ? 'bg-input/50' : ''
-        }`}
-      >
+      <div className="flex items-center gap-3 px-4 py-3.5">
         <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${dotColor}`} />
         <input
           ref={inputRef}
@@ -46,29 +39,6 @@ function LocationField({
         />
         {trailingIcon}
       </div>
-
-      {showDropdown && suggestions.length > 0 && (
-        <ul
-          className="absolute left-0 right-0 z-50 mt-0 max-h-48 overflow-y-auto rounded-b-2xl border border-input border-t-0 bg-card py-1 shadow-card-lg animate-fade-in"
-          role="listbox"
-        >
-          {suggestions.map((location) => (
-            <li key={location} role="option" aria-selected={value === location}>
-              <button
-                type="button"
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  onSelectLocation(location);
-                }}
-                className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-sm text-foreground transition hover:bg-input active:bg-input"
-              >
-                <HiOutlineSearch className="shrink-0 text-muted" />
-                <span className="font-medium">{location}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }
@@ -156,6 +126,8 @@ export default function LocationSearch({
         ? filteredDestination.length > 0
         : false;
 
+  const currentSuggestions = activeField === 'pickup' ? filteredPickup : filteredDestination;
+
   return (
     <div className="space-y-3">
       <h2 className="text-base font-bold text-foreground">Where are you going?</h2>
@@ -173,14 +145,11 @@ export default function LocationSearch({
           value={pickup}
           dotColor="bg-emerald-500"
           inputRef={null}
-          showDropdown={activeField === 'pickup' && filteredPickup.length > 0}
-          suggestions={filteredPickup}
           onChange={handlePickupInput}
           onFocusField={() => {
             setActiveField('pickup');
             setFilteredPickup(filterLocations(pickup));
           }}
-          onSelectLocation={selectPickup}
         />
 
         <div className="mx-4 border-t border-input" />
@@ -192,14 +161,11 @@ export default function LocationSearch({
           value={destination}
           dotColor="bg-red-500"
           inputRef={destinationInputRef}
-          showDropdown={activeField === 'destination' && filteredDestination.length > 0}
-          suggestions={filteredDestination}
           onChange={handleDestinationInput}
           onFocusField={() => {
             setActiveField('destination');
             setFilteredDestination(filterLocations(destination));
           }}
-          onSelectLocation={selectDestination}
           trailingIcon={
             <button
               type="button"
@@ -212,6 +178,33 @@ export default function LocationSearch({
           }
         />
       </div>
+
+      {activeField && currentSuggestions.length > 0 && (
+        <ul
+          className="rounded-2xl border border-input bg-card py-1 shadow-card-lg animate-fade-in max-h-48 overflow-y-auto"
+          role="listbox"
+        >
+          {currentSuggestions.map((location) => (
+            <li key={location} role="option" aria-selected={(activeField === 'pickup' ? pickup : destination) === location}>
+              <button
+                type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  if (activeField === 'pickup') {
+                    selectPickup(location);
+                  } else {
+                    selectDestination(location);
+                  }
+                }}
+                className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-sm text-foreground transition hover:bg-input active:bg-input"
+              >
+                <HiOutlineSearch className="shrink-0 text-muted" />
+                <span className="font-medium">{location}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

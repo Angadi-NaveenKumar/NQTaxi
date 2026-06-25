@@ -45,6 +45,8 @@ import MapView from '../../components/customer/MapView';
 import DriverCard from '../../components/customer/DriverCard';
 
 export default function DriverOnTheWay({
+  driverDetails,
+  otp,
   onCall,
   onMessage,
   onShare,
@@ -66,8 +68,19 @@ export default function DriverOnTheWay({
         </div>
       </div>
 
+      <div className="absolute left-1/2 top-16 z-10 -translate-x-1/2 w-64 animate-[fadeIn_0.5s_ease-out]">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-card/90 px-4 py-2.5 shadow-card-lg backdrop-blur text-center">
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted">
+            Share OTP to Start Ride
+          </span>
+          <span className="text-2xl font-black tracking-[0.2em] text-primary mt-1 pl-2">
+            {otp || "5729"}
+          </span>
+        </div>
+      </div>
+
       <div className="absolute bottom-0 left-0 right-0 z-10 space-y-3 p-4">
-        <DriverCard onCall={onCall} onMessage={onMessage} />
+        <DriverCard driver={driverDetails} onCall={onCall} onMessage={onMessage} />
 
         <div className="grid grid-cols-3 gap-3">
           <button
