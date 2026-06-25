@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCar, FaMoneyBillWave, FaStar } from "react-icons/fa";
 
@@ -14,15 +14,37 @@ export default function DriverHomePage() {
   const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(false);
 
-  const handleToggle = () => {
-    const newState = !isOnline;
-    setIsOnline(newState);
+  useEffect(() => {
+    if (!isOnline) return;
 
-    if (newState) {
-      setTimeout(() => {
-        navigate("/driver/new-request");
-      }, 3500);
-    }
+    const checkActiveBooking = (bookingString) => {
+      try {
+        const booking = bookingString ? JSON.parse(bookingString) : null;
+        if (booking && booking.status === "pending") {
+          // Play simulated notification sound or prompt if desired, then navigate
+          navigate("/driver/new-request");
+        }
+      } catch (err) {
+        console.error("Error reading active booking", err);
+      }
+    };
+
+    const handleStorageChange = (e) => {
+      if (e.key === "nqtaxi_active_booking") {
+        checkActiveBooking(e.newValue);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Initial check when toggled online
+    checkActiveBooking(localStorage.getItem("nqtaxi_active_booking"));
+
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [isOnline, navigate]);
+
+  const handleToggle = () => {
+    setIsOnline((prev) => !prev);
   };
 
   return (

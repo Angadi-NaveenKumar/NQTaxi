@@ -18,6 +18,7 @@ const DEMO_ACCOUNTS = [
     role: 'rider',
     fullName: 'Demo Customer',
     phone: '+91 9000000001',
+    otp: '5729',
   },
   {
     email: 'demo.driver@nqtaxi.com',
@@ -134,7 +135,7 @@ function findUserByIdentifier(identifier) {
   });
 }
 
-async function buildUserRecord({ fullName, email, phone, password, role }) {
+async function buildUserRecord({ fullName, email, phone, password, role, otp }) {
   return {
     id: typeof crypto !== 'undefined' && crypto.randomUUID
       ? crypto.randomUUID()
@@ -147,6 +148,7 @@ async function buildUserRecord({ fullName, email, phone, password, role }) {
     status: 'active',
     isVerified: true,
     createdAt: Date.now(),
+    otp: role === 'rider' ? (otp || Math.floor(1000 + Math.random() * 9000).toString()) : undefined,
   };
 }
 
@@ -184,6 +186,10 @@ async function migrateLegacyUsers() {
     }
     if (user.isVerified === undefined) {
       user.isVerified = true;
+      changed = true;
+    }
+    if (user.role === 'rider' && !user.otp) {
+      user.otp = user.email === 'demo.customer@nqtaxi.com' ? '5729' : Math.floor(1000 + Math.random() * 9000).toString();
       changed = true;
     }
   }
