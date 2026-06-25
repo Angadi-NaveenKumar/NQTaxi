@@ -217,7 +217,7 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const { setRole, setAuthenticated, setDriverOtpVerified } = useAppStore();
+  const { setRole, setAuthenticated, setDriverOtpVerified, setDriverProfileCompleted, setDriverDocumentsCompleted } = useAppStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -238,6 +238,8 @@ export default function Login() {
         setLoading(false);
         if (userRole === 'driver') {
           setDriverOtpVerified(true);
+          setDriverProfileCompleted(true);
+          setDriverDocumentsCompleted(true);
           navigate('/driver/dashboard', { replace: true });
         } else if (userRole === 'admin') {
           navigate('/admin', { replace: true });

@@ -122,9 +122,13 @@ function App() {
                 driverDetails: booking.driverDetails,
                 otp: booking.otp || current.otp,
               }));
-              navigate("/customer/driver-on-the-way");
+              if (role === "rider") {
+                navigate("/customer/driver-on-the-way");
+              }
             } else if (booking.status === "in_progress") {
-              navigate("/customer/ride-in-progress");
+              if (role === "rider") {
+                navigate("/customer/ride-in-progress");
+              }
             }
           } else {
             setRideData((current) => ({
@@ -153,13 +157,15 @@ function App() {
             otp: booking.otp,
           }));
         } else if (booking.status === "in_progress") {
-          navigate("/customer/ride-in-progress");
+          if (role === "rider") {
+            navigate("/customer/ride-in-progress");
+          }
         }
       }
     } catch {}
 
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, [navigate]);
+  }, [navigate, role]);
 
   const navigateToRideOptions = (pickup, destination) => {
     setRideData((current) => ({ ...current, pickup, destination }));

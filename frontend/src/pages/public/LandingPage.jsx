@@ -11,6 +11,7 @@ export default function LandingPage() {
 
   const clearSession = () => {
     logout();
+    localStorage.removeItem("nqtaxi_active_booking");
     setAuthenticated(false);
     setRole('rider');
     window.location.reload();
@@ -26,7 +27,7 @@ export default function LandingPage() {
           </div>
           <span className="text-xl font-extrabold tracking-tight">NQTaxi</span>
         </div>
-        {/* <div className="flex gap-3">
+        <div className="flex gap-3">
           <button
             onClick={clearSession}
             className="text-xs font-bold text-danger hover:text-red-400 transition-colors"
@@ -39,7 +40,7 @@ export default function LandingPage() {
           >
             Sign In
           </button>
-        </div> */}
+        </div>
       </header>
 
       {/* Hero Section */}

@@ -42,17 +42,22 @@ export default function RideInProgress() {
 
   const handleStartRide = () => {
     if (enteredOtp === expectedOtp) {
-      try {
-        const stored = localStorage.getItem("nqtaxi_active_booking");
-        if (stored) {
-          const booking = JSON.parse(stored);
-          booking.status = "in_progress";
-          localStorage.setItem("nqtaxi_active_booking", JSON.stringify(booking));
-        }
-      } catch (err) {
-        console.error("Error starting ride", err);
-      }
+      // Navigate first to avoid localStorage write triggering storage events
+      // that could cause DriverWorkflowGuard to re-evaluate before navigation.
       navigate("/driver/trip-completion");
+      // Update booking status after navigation has been initiated
+      setTimeout(() => {
+        try {
+          const stored = localStorage.getItem("nqtaxi_active_booking");
+          if (stored) {
+            const booking = JSON.parse(stored);
+            booking.status = "in_progress";
+            localStorage.setItem("nqtaxi_active_booking", JSON.stringify(booking));
+          }
+        } catch (err) {
+          console.error("Error starting ride", err);
+        }
+      }, 0);
     } else {
       setErrorMsg("Invalid OTP. Please check with passenger and try again.");
     }
