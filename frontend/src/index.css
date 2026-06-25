@@ -1,74 +1,324 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    @apply bg-brand-black text-white font-sans antialiased;
-    min-height: 100vh;
-  }
-
-  /* Scrollbar styling */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-brand-dark; }
-  ::-webkit-scrollbar-thumb { @apply bg-brand-yellow rounded-full; }
+/* ------------------------------------------------------------
+   Custom CSS variables for NQTaxi theme – Dark Theme (Rapido style)
+   ------------------------------------------------------------ */
+:root {
+  --color-primary: #F5C518;
+  --color-primary-fg: #000000;
+  --color-bg-primary: #0D0D0D;
+  --color-bg-secondary: #1A1A1A;
+  --color-bg-tertiary: #242424;
+  --color-surface: #1A1A1A;
+  --color-surface-elevated: #242424;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B0B0B0;
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-danger: #F44336;
+  --color-info: #2196F3;
+  --color-muted: #6B7280;
+  --color-input: #2A2A2A;
+  --color-border: #333333;
 }
 
-@layer components {
-  /* ── Buttons ─────────────────────────────────────── */
-  .btn-primary {
-    @apply bg-brand-yellow text-brand-black font-semibold px-6 py-3 rounded-xl
-           hover:brightness-110 active:scale-95 transition-all duration-200
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
+/* ------------------------------------------------------------
+   Global reset & base styles
+   ------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+}
 
-  .btn-secondary {
-    @apply border border-brand-yellow text-brand-yellow font-semibold px-6 py-3 rounded-xl
-           hover:bg-brand-yellow hover:text-brand-black active:scale-95 transition-all duration-200;
-  }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
 
-  .btn-ghost {
-    @apply text-white/70 font-medium px-6 py-3 rounded-xl
-           hover:text-white hover:bg-white/10 active:scale-95 transition-all duration-200;
-  }
+/* ------------------------------------------------------------
+   Custom color utilities (override Tailwind defaults)
+   ------------------------------------------------------------ */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-dark { background-color: #D4A80E; }
+.bg-primary\/20 { background-color: rgba(245, 197, 24, 0.2); }
+.bg-primary\/10 { background-color: rgba(245, 197, 24, 0.1); }
+.bg-primary\/5 { background-color: rgba(245, 197, 24, 0.05); }
+.bg-primary-fg { background-color: var(--color-primary-fg); }
 
-  /* ── Cards ───────────────────────────────────────── */
-  .card {
-    @apply bg-brand-gray rounded-2xl p-6 border border-white/10;
-  }
+.bg-background { background-color: var(--color-bg-primary); }
+.bg-surface { background-color: var(--color-bg-secondary); }
+.bg-surface-secondary { background-color: var(--color-bg-secondary); }
+.bg-elevated { background-color: var(--color-bg-tertiary); }
+.bg-card { background-color: var(--color-bg-secondary); }
+.bg-input { background-color: var(--color-input); }
 
-  .card-hover {
-    @apply card hover:border-brand-yellow/50 hover:shadow-lg
-           hover:shadow-brand-yellow/10 transition-all duration-300;
-  }
+.text-text { color: var(--color-text-primary); }
+.text-text-primary { color: var(--color-text-primary); }
+.text-text-secondary { color: var(--color-text-secondary); }
+.text-muted { color: var(--color-muted); }
+.text-primary { color: var(--color-primary); }
+.text-primary-fg { color: var(--color-primary-fg); }
+.text-success { color: var(--color-success); }
+.text-danger { color: var(--color-danger); }
+.text-warning { color: var(--color-warning); }
+.text-info { color: var(--color-info); }
 
-  /* ── Inputs ──────────────────────────────────────── */
-  .input-field {
-    @apply w-full bg-brand-gray border border-white/20 text-white placeholder-white/40
-           rounded-xl px-4 py-3 focus:outline-none focus:border-brand-yellow
-           transition-colors duration-200;
-  }
+.border-border { border-color: var(--color-border); }
+.border-input { border-color: var(--color-input); }
 
-  /* ── Badges ──────────────────────────────────────── */
-  .badge-success { @apply bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full font-medium; }
-  .badge-warning { @apply bg-brand-yellow/20 text-brand-yellow text-xs px-2 py-1 rounded-full font-medium; }
-  .badge-danger  { @apply bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full font-medium; }
-  .badge-info    { @apply bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full font-medium; }
+.fill-primary { fill: var(--color-primary); }
 
-  /* ── Page wrapper ────────────────────────────────── */
-  .page-wrapper {
-    @apply min-h-screen bg-brand-black;
+/* ------------------------------------------------------------
+   Shadows & glow effects
+   ------------------------------------------------------------ */
+.shadow-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.shadow-card-lg {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.shadow-glow {
+  box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.shadow-panel {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.shadow-soft {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ------------------------------------------------------------
+   Animations
+   ------------------------------------------------------------ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
   }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out forwards;
+}
+.animate-slide-in-from-bottom {
+  animation: slideInFromBottom 0.3s ease-out forwards;
+}
+.animate-zoom-in {
+  animation: zoomIn 0.2s ease-out forwards;
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ------------------------------------------------------------
+   Map grid background pattern
+   ------------------------------------------------------------ */
+.home-map-grid {
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ------------------------------------------------------------
+   Scrollbar styling
+   ------------------------------------------------------------ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #444444;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ------------------------------------------------------------
+   Touch target improvements for mobile
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+}
+
+/* ------------------------------------------------------------
+   Form elements dark theme
+   ------------------------------------------------------------ */
+input, textarea, select {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  ring: 2px solid var(--color-primary);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* ------------------------------------------------------------
+   Card & button component styles (used by various components)
+   ------------------------------------------------------------ */
+.card {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #000000;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+.btn-primary:hover {
+  background-color: #D4A80E;
+  transform: scale(1.02);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-secondary {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+}
+
+/* ------------------------------------------------------------
+   Status badges
+   ------------------------------------------------------------ */
+.badge-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--color-success);
+}
+.badge-danger {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--color-danger);
+}
+.badge-warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: var(--color-warning);
+}
+.badge-info {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: var(--color-info);
+}
+
+/* ------------------------------------------------------------
+   Layout utilities
+   ------------------------------------------------------------ */
+.sidebar {
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.glass {
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.profile-button {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+.profile-button:hover {
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+}
+.profile-button:active {
+  transform: scale(0.98);
+}
+
+/* ------------------------------------------------------------
+   Safe area inset for bottom navigation (iOS)
+   ------------------------------------------------------------ */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
 }
