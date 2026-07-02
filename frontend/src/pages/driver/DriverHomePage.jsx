@@ -815,60 +815,108 @@ export default function DriverHomePage() {
         {/* --- REFER & EARN --- */}
         {activePage === 'referral' && (
           <section className="space-y-6">
-            {/* Referral Stats Banner Card */}
-            <article className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1A1A1A] p-6 shadow-lg">
-              <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(245,197,24,0.1)_0%,transparent_70%)] pointer-events-none" />
-              
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-white/[0.08] pb-6">
-                <div>
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5C518]/10 text-[#F5C518] border border-[#F5C518]/20">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Green Referral Banner (Rapido-style) */}
+              <article className="lg:col-span-2 relative overflow-hidden rounded-[24px] bg-[#1E5E52] min-h-[190px] flex flex-row items-stretch justify-between shadow-lg">
+                {/* Megaphone Illustration on Left */}
+                <div className="w-[45%] flex items-end justify-start pl-4 select-none relative overflow-hidden">
+                  <svg viewBox="0 0 200 150" className="w-full h-full max-h-[170px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {/* The white bottom curve representing her pants/ground */}
+                    <path d="M -10,150 Q 50,115 110,135 Q 135,145 160,150 Z" fill="white" />
+                    
+                    {/* Hair back */}
+                    <path d="M 32,85 C 20,95 18,120 22,130 C 25,120 28,100 35,90 Z" fill="#1F2937" />
+
+                    {/* Body / Shirt */}
+                    <path d="M 38,105 C 32,115 30,135 34,145 C 50,145 78,140 85,130 C 80,120 75,108 65,105 Z" fill="#3B82F6" />
+                    
+                    {/* Neck */}
+                    <path d="M 48,98 Q 50,105 52,106 Q 55,105 54,98 Z" fill="#FBCFE8" />
+
+                    {/* Face */}
+                    <path d="M 46,78 C 42,88 56,92 58,84 C 60,78 50,72 46,78 Z" fill="#FBCFE8" />
+                    
+                    {/* Hair front */}
+                    <path d="M 44,78 C 48,72 58,74 54,82 C 50,80 46,80 44,78 Z" fill="#1F2937" />
+                    <path d="M 44,78 C 38,82 34,92 30,112 C 34,96 38,88 44,78 Z" fill="#1F2937" />
+
+                    {/* Shouting mouth */}
+                    <path d="M 52,83 Q 55,85 52,86 Z" fill="#E11D48" />
+
+                    {/* Arm raising megaphone */}
+                    <path d="M 58,110 L 72,82 C 74,78 78,78 76,82 L 64,112 Z" fill="#3B82F6" />
+                    {/* Hand */}
+                    <circle cx="73" cy="80" r="4" fill="#FBCFE8" />
+
+                    {/* Megaphone */}
+                    <path d="M 72,82 L 68,92 L 72,92 L 74,84 Z" fill="#EF4444" /> {/* handle */}
+                    <path d="M 70,80 L 78,72 L 82,76 L 74,84 Z" fill="#ECEFF1" /> {/* body */}
+                    <path d="M 76,74 L 98,52 C 101,50 105,54 103,57 L 82,78 Z" fill="#EF4444" /> {/* cone */}
+                    <ellipse cx="101" cy="55" rx="3.5" ry="8" fill="#DC2626" transform="rotate(32 101 55)" /> {/* rim */}
+
+                    {/* Sound waves */}
+                    <path d="M 112,46 C 118,48 120,53 117,58" stroke="#E0F2F1" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M 118,40 C 126,44 128,53 122,61" stroke="#E0F2F1" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M 124,34 C 134,39 136,53 127,64" stroke="#E0F2F1" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="3 3" />
+                  </svg>
+                </div>
+
+                {/* Right Text & Code Pill (aligned right) */}
+                <div className="w-[55%] flex flex-col justify-center items-end pr-6 py-5 text-white text-right z-10 select-none">
+                  <h3 className="text-base sm:text-lg md:text-xl font-bold tracking-tight leading-snug">
+                    Invite other drivers to try <br />
+                    <span className="text-white font-extrabold text-lg sm:text-xl md:text-2xl">NQTaxi</span>
+                  </h3>
+                  <p className="mt-1 text-[11px] sm:text-xs text-white/80 max-w-[220px]">
+                    Earn ₹ 1,000 for every driver who signs up and completes 20 rides.
+                  </p>
+
+                  <div className="mt-4 flex items-center justify-between bg-black/25 border border-white/10 rounded-xl px-4 py-2 hover:bg-black/35 transition-all">
+                    <span className="text-xs sm:text-sm font-bold font-mono tracking-wider text-white mr-3">NQDRV500</span>
+                    <button
+                      type="button"
+                      onClick={copyReferralCode}
+                      className="p-1 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors flex items-center justify-center"
+                      aria-label="Copy Promo Code"
+                    >
+                      {copiedCode ? (
+                        <Check className="h-4 w-4 text-[#4CAF50]" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              {/* Total Referral Earned card (takes 1 col) */}
+              <article className="relative overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#1A1A1A] p-6 shadow-lg flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#4CAF50]/10 text-[#4CAF50] border border-[#4CAF50]/20">
                     <Gift className="h-5 w-5" />
                   </div>
-                  <h3 className="mt-3 text-lg font-bold text-white">Refer Other Drivers & Earn</h3>
-                  <p className="mt-0.5 text-sm text-gray-400">Share code and earn ₹ 1,000 for every driver who signs up and completes 20 rides.</p>
-                </div>
-
-                <div className="bg-[#242424] rounded-2xl p-5 border border-white/[0.06] text-center w-full md:w-auto min-w-[200px]">
-                  <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Total Referral Earned</span>
-                  <div className="mt-1 text-2xl font-extrabold text-[#4CAF50]">₹ 3,500</div>
-                </div>
-              </div>
-
-              {/* Action grid (Copy link and code) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                {/* Code Card */}
-                <div className="bg-[#242424] rounded-xl p-4 border border-white/[0.04] flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] text-gray-500 block">Your Invite Promo Code</span>
-                    <span className="text-sm font-mono font-bold text-[#F5C518]">NQDRV500</span>
+                    <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Total Referral Earned</span>
+                    <div className="mt-1 text-3xl font-black text-[#4CAF50]">₹ 3,500</div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={copyReferralCode}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-[#1A1A1A] hover:bg-[#1A1A1A]/80 text-gray-300 hover:text-[#F5C518] transition-colors"
-                    aria-label="Copy code"
-                  >
-                    {copiedCode ? <Check className="h-4.5 w-4.5 text-[#4CAF50]" /> : <Copy className="h-4.5 w-4.5" />}
-                  </button>
                 </div>
 
-                {/* Link Card */}
-                <div className="bg-[#242424] rounded-xl p-4 border border-white/[0.04] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] text-gray-500 block">Unique Registration URL</span>
-                    <span className="text-xs text-gray-400 truncate max-w-[200px] block">nqtaxi.com/invite/NQDRV500</span>
+                <div className="mt-6 pt-4 border-t border-white/[0.08] space-y-2">
+                  <span className="text-[10px] text-gray-500 block">Unique Registration URL</span>
+                  <div className="flex items-center justify-between bg-[#242424] rounded-xl p-3 border border-white/[0.04]">
+                    <span className="text-xs text-gray-300 truncate max-w-[150px]">nqtaxi.com/invite/NQDRV500</span>
+                    <button
+                      type="button"
+                      onClick={copyReferralLink}
+                      className="p-1.5 rounded bg-[#1A1A1A] border border-white/10 hover:bg-[#1A1A1A]/80 text-gray-300 hover:text-[#F5C518] transition-colors"
+                      aria-label="Copy invite link"
+                    >
+                      {copiedLink ? <Check className="h-4 w-4 text-[#4CAF50]" /> : <Copy className="h-4 w-4" />}
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={copyReferralLink}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-[#1A1A1A] hover:bg-[#1A1A1A]/80 text-gray-300 hover:text-[#F5C518] transition-colors"
-                    aria-label="Copy invite link"
-                  >
-                    {copiedLink ? <Check className="h-4.5 w-4.5 text-[#4CAF50]" /> : <Copy className="h-4.5 w-4.5" />}
-                  </button>
                 </div>
-              </div>
-            </article>
+              </article>
+            </div>
 
             {/* Referrals Stats Table/Overview */}
             <article className="rounded-2xl border border-white/[0.08] bg-[#1A1A1A] p-6 shadow-lg">
