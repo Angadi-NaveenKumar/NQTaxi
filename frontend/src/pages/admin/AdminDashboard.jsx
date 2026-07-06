@@ -13,9 +13,11 @@ const PAGES = new Set([
   'fleet',
   'analytics',
   'mail',
+  'support',
   'settings',
   'calendar',
 ]);
+
 
 export default function AdminDashboard({ email, onLogout }) {
   const [activePage, setActivePage] = useState('dashboard');
@@ -25,6 +27,16 @@ export default function AdminDashboard({ email, onLogout }) {
       setActivePage(pageId);
     }
   };
+
+  if (activePage === 'support') {
+    return (
+      <SupportInboxPage
+        email={email}
+        onLogout={onLogout}
+        onNavigate={navigate}
+      />
+    );
+  }
 
   if (activePage === 'users') {
     return (

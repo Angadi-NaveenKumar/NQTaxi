@@ -42,6 +42,7 @@ import WalletDashboard from './pages/driver/WalletDashboard';
 import DriverProfileSetup from './pages/driver/DriverProfileSetup';
 import DocumentVerification from './pages/driver/DocumentVerification';
 import DriverHomePage from './pages/driver/DriverHomePage';
+import DriverLogin from './pages/driver/DriverLogin';
 import EarningsDashboard from './pages/driver/EarningsDashboard';
 import DriverStats from './pages/driver/DriverStats';
 import TripHistory from './pages/driver/TripHistory';
@@ -58,16 +59,18 @@ import CustomerRatingPage from "./pages/driver/CustomerRatingPage";
 
 
 // Admin Pages
-import DriverManagement from './pages/admin/DriverManagement';
 import Reports from './pages/admin/Reports';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import DashboardView from './pages/admin/DashboardView';
+import DriverManagement from './pages/admin/DriverManagement';
 import FleetOverview from './pages/admin/FleetOverview';
 import UsersDirectory from './pages/admin/UsersDirectory';
 import FareSettingsPage from './pages/admin/FareSettingsPage';
 import SupportInboxPage from './pages/admin/SupportInboxPage';
 import BookingsTablePage from './pages/admin/BookingsTablePage';
+
+
 
 // Components
 import BookingSpinner from './components/customer/BookingSpinner';
@@ -216,6 +219,7 @@ function App() {
       <Route path="/otp-verification" element={<PublicRoute isAuthenticated={isAuthenticated} role={role}><OTPVerification /></PublicRoute>} />
 
       <Route path="/admin/login" element={<AdminLoginRoute />} />
+      <Route path="/driver/login" element={<DriverLoginRoute />} />
 
 
 
@@ -282,19 +286,20 @@ function App() {
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
-
 }
 
+function UsersDirectoryRoute() {
+  const navigate = useAdminNavigate();
+  return <UsersDirectory email="admin@nqtaxi.com" onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
+}
+
+function FleetOverviewRoute() {
+  const navigate = useAdminNavigate();
+  return <FleetOverview onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
+}
+
+
 function getDriverRedirectPath(driver) {
-  if (!driver.isOtpVerified) {
-    return "/otp-verification";
-  }
-  if (!driver.profileCompleted || driver.onboardingStep === ONBOARDING_STEPS.STEP_1_PROFILE_SETUP) {
-    return "/driver/profile-setup";
-  }
-  if (!driver.documentsCompleted || driver.onboardingStep === ONBOARDING_STEPS.STEP_2_DOCUMENT_VERIFICATION) {
-    return "/driver/document-verification";
-  }
   return "/driver/dashboard";
 }
 
@@ -465,6 +470,24 @@ function AdminLoginRoute() {
   );
 }
 
+function DriverLoginRoute() {
+  const navigate = useNavigate();
+  const { setAuthenticated, setRole, setDriverOtpVerified, setDriverProfileCompleted, setDriverDocumentsCompleted } = useAppStore();
+
+  return (
+    <DriverLogin
+      onSuccess={() => {
+        setAuthenticated(true);
+        setRole("driver");
+        setDriverOtpVerified(true);
+        setDriverProfileCompleted(true);
+        setDriverDocumentsCompleted(true);
+        navigate("/driver/dashboard", { replace: true });
+      }}
+    />
+  );
+}
+
 function AdminDashboardRoute() {
   const navigate = useNavigate();
   const { setAuthenticated } = useAppStore();
@@ -486,15 +509,7 @@ function DashboardViewRoute() {
   return <DashboardView email="admin@nqtaxi.com" onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
 }
 
-function UsersDirectoryRoute() {
-  const navigate = useAdminNavigate();
-  return <UsersDirectory email="admin@nqtaxi.com" onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
-}
 
-function FleetOverviewRoute() {
-  const navigate = useAdminNavigate();
-  return <FleetOverview onLogout={() => navigate("/admin/login")} onNavigate={navigate} />;
-}
 
 function AnalyticsRoute() {
   const navigate = useAdminNavigate();

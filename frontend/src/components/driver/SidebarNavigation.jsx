@@ -1,15 +1,54 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { sidebarNavItems } from './NavigationConfig';
+import { overviewNavItems, activeTripNavItems, accountNavItems } from './NavigationConfig';
 import { clsx } from 'clsx';
+import { LogOut } from 'lucide-react';
 
 export default function SidebarNavigation({ onLogout }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const renderNavItem = (item) => {
+    const [itemPath, itemHash] = item.path.split('#');
+    const isActive = itemHash
+      ? location.pathname === itemPath && location.hash === `#${itemHash}`
+      : location.pathname === item.path;
+    const Icon = item.icon;
+
+    return (
+      <Link
+        key={item.id}
+        to={item.path}
+        onClick={(event) => {
+          if (!itemHash || location.pathname !== itemPath) return;
+
+          event.preventDefault();
+          navigate(item.path);
+          setTimeout(() => {
+            document.getElementById(itemHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 0);
+        }}
+        className={clsx(
+          'flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group text-sm',
+          isActive
+            ? 'bg-primary/20 text-primary border border-primary/30 shadow-glow font-bold'
+            : 'text-muted hover:text-text hover:bg-elevated hover:border-border border border-transparent font-medium'
+        )}
+      >
+        <Icon
+          size={20}
+          className={clsx(
+            'transition-all duration-300',
+            isActive ? 'scale-110' : 'scale-100 group-hover:scale-105'
+          )}
+        />
+        <span>{item.label}</span>
+      </Link>
+    );
+  };
+
   return (
-    <aside className="hidden md:flex md:flex-col md:w-72 bg-surface border-r border-border h-screen sticky top-0">
+    <aside className="hidden md:flex md:flex-col md:w-72 bg-surface border-r border-border h-screen sticky top-0 shrink-0">
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <div className="flex items-center gap-3">
@@ -25,61 +64,53 @@ export default function SidebarNavigation({ onLogout }) {
         </div>
         <p className="text-xs text-muted mt-2">Driver Portal</p>
       </div>
-      {/* Nav Items */}
-      <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-        {sidebarNavItems.map((item) => {
-          const [itemPath, itemHash] = item.path.split('#');
-          const isActive = itemHash
-            ? location.pathname === itemPath && location.hash === `#${itemHash}`
-            : location.pathname === item.path;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.id}
-              to={item.path}
-              onClick={(event) => {
-                if (!itemHash || location.pathname !== itemPath) return;
 
-                event.preventDefault();
-                navigate(item.path);
-                setTimeout(() => {
-                  document.getElementById(itemHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 0);
-              }}
-              className={clsx(
-                'flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group',
-                isActive
-                  ? 'bg-primary/20 text-primary border border-primary/30 shadow-glow'
-                  : 'text-muted hover:text-text hover:bg-elevated hover:border-border border border-transparent'
-              )}
-            >
-              <Icon
-                size={22}
-                className={clsx(
-                  'transition-all duration-300',
-                  isActive ? 'scale-110' : 'scale-100 group-hover:scale-105'
-                )}
-              />
-              <span className="font-medium">{item.label}</span>
-            </Link>
-          );
-        })}
+      {/* Nav Items */}
+      <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+        {/* Overview & Earnings Section */}
+        <div className="space-y-2">
+          <div className="text-[10px] font-bold text-muted uppercase tracking-wider px-4">
+            Overview &amp; Earnings
+          </div>
+          <div className="space-y-1">
+            {overviewNavItems.map(renderNavItem)}
+          </div>
+        </div>
+
+        {/* Active Ride Section */}
+        <div className="space-y-2">
+          <div className="text-[10px] font-bold text-muted uppercase tracking-wider px-4">
+            Active Ride Flow
+          </div>
+          <div className="space-y-1">
+            {activeTripNavItems.map(renderNavItem)}
+          </div>
+        </div>
+
+        {/* Account & Settings Section */}
+        <div className="space-y-2">
+          <div className="text-[10px] font-bold text-muted uppercase tracking-wider px-4">
+            Account &amp; Settings
+          </div>
+          <div className="space-y-1">
+            {accountNavItems.map(renderNavItem)}
+          </div>
+        </div>
       </nav>
-      {/* Logout Button */}
+
+      {/* Log Out button at the bottom */}
       {onLogout && (
         <div className="p-4 border-t border-border">
           <button
+            type="button"
             onClick={onLogout}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-danger hover:bg-danger/10 transition-all font-semibold"
+            className="flex w-full items-center gap-4 px-4 py-3 rounded-2xl text-danger hover:bg-danger/10 transition-all font-medium text-sm"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            <span>Logout</span>
+            <LogOut size={20} />
+            <span>Log Out</span>
           </button>
         </div>
       )}
     </aside>
   );
 }
-
