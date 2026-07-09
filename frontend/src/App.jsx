@@ -36,6 +36,7 @@ import ProfileSettings from './pages/customer/ProfileSettings';
 import RatingsReviews from './pages/customer/RatingsReviews';
 import SavedUpiCards from './pages/customer/SavedUpiCards';
 import TripCostSummary from './pages/customer/TripCostSummary';
+import CustomerScanPay from './pages/customer/CustomerScanPay';
 
 // Driver Pages
 import WalletDashboard from './pages/driver/WalletDashboard';
@@ -55,6 +56,7 @@ import RiderProgressPage from "./pages/driver/RiderProgressPage";
 import TripCompletionPage from "./pages/driver/TripCompletionPage";
 import TripDetailsPage from "./pages/driver/TripDetailsPage";
 import PaymentConfirmationPage from "./pages/driver/PaymentConfirmationPage";
+import PaymentConfirmation from "./components/driver/PaymentConfirmation";
 import CustomerRatingPage from "./pages/driver/CustomerRatingPage";
 
 
@@ -114,6 +116,8 @@ function App() {
 
   // Listen for cross-tab ride acceptance
   useEffect(() => {
+    if (!authReady || !isAuthenticated) return;
+
     const handleStorageChange = (e) => {
       if (e.key === "nqtaxi_active_booking") {
         try {
@@ -168,7 +172,7 @@ function App() {
     } catch {}
 
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, [navigate, role]);
+  }, [navigate, role, isAuthenticated, authReady]);
 
   const navigateToRideOptions = (pickup, destination) => {
     setRideData((current) => ({ ...current, pickup, destination }));
@@ -225,6 +229,7 @@ function App() {
 
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/customer/scan-pay" element={<CustomerScanPay />} />
 
       {/* Customer Routes */}
       <Route path="/customer/dashboard" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Homemapbase
@@ -599,6 +604,8 @@ function DriverLayout({ children }) {
 function Layout({ children }) {
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const { setAuthenticated, setRole, resetDriverState } = useAppStore();
+  const location = useLocation();
+  const isDashboard = location.pathname === '/customer/dashboard';
 
   const handleLogout = () => {
     logout();
@@ -615,25 +622,29 @@ function Layout({ children }) {
       {/* Main Content */}
       <div className="md:pl-64 transition-all duration-300">
         {/* Top Header (Tablet/Desktop) */}
-        <div className="hidden md:flex sticky top-0 z-40 border-b border-border bg-surface/95 px-6 py-3 backdrop-blur-sm">
-          <Link to="/customer/profile" className="flex ml-auto h-10 w-10 items-center justify-center rounded-full bg-elevated hover:bg-primary/20">
-            <span className="text-lg">U</span>
-          </Link>
-        </div>
+        {!isDashboard && (
+          <div className="hidden md:flex sticky top-0 z-40 border-b border-border bg-surface/95 px-6 py-3 backdrop-blur-sm">
+            <Link to="/customer/profile" className="flex ml-auto h-10 w-10 items-center justify-center rounded-full bg-elevated hover:bg-primary/20">
+              <span className="text-lg">U</span>
+            </Link>
+          </div>
+        )}
 
         {/* Mobile Header */}
-        <div className="md:hidden sticky top-0 z-40 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur-sm">
-          <div className="flex items-center gap-2">
-            <svg className="w-8 h-8" viewBox="0 0 44 30" fill="none">
-              <rect x="3" y="12" width="38" height="14" rx="4" fill="#F5C518" stroke="#1A1A1A" strokeWidth="1.5" />
-              <path d="M10 12 L14 6 H30 L34 12 Z" fill="#F5C518" stroke="#1A1A1A" strokeWidth="1.5" />
-            </svg>
-            <span className="text-xl font-bold text-primary">NQTaxi</span>
+        {!isDashboard && (
+          <div className="md:hidden sticky top-0 z-40 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur-sm">
+            <div className="flex items-center gap-2">
+              <svg className="w-8 h-8" viewBox="0 0 44 30" fill="none">
+                <rect x="3" y="12" width="38" height="14" rx="4" fill="#F5C518" stroke="#1A1A1A" strokeWidth="1.5" />
+                <path d="M10 12 L14 6 H30 L34 12 Z" fill="#F5C518" stroke="#1A1A1A" strokeWidth="1.5" />
+              </svg>
+              <span className="text-xl font-bold text-primary">NQTaxi</span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Page Content */}
-        <main className="p-4 pb-24 md:p-6">{children}</main>
+        <main className={isDashboard ? "relative h-screen w-full overflow-hidden" : "p-4 pb-24 md:p-6"}>{children}</main>
       </div>
 
       {/* Bottom Navigation (Mobile) */}
@@ -643,9 +654,9 @@ function Layout({ children }) {
 
       {/* More Menu Drawer */}
       <MoreDrawer
-        isOpen={isMoreMenuOpen}
-        onClose={() => setIsMoreMenuOpen(false)}
-        onLogout={handleLogout}
+         isOpen={isMoreMenuOpen}
+         onClose={() => setIsMoreMenuOpen(false)}
+         onLogout={handleLogout}
       />
     </div>
   );
