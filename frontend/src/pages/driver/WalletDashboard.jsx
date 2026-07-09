@@ -14,9 +14,34 @@ const WEEKLY_EARNINGS = [
 ];
 
 export default function WalletDashboard() {
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(() => {
+    const saved = localStorage.getItem("driver_wallet_balance");
+    return saved ? parseFloat(saved) : 1240;
+  });
   const [pending, setPending] = useState(0);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState(() => {
+    const saved = localStorage.getItem("driver_transactions");
+    return saved ? JSON.parse(saved) : [
+      {
+        id: "tx-init-1",
+        date: new Date(Date.now() - 3600000 * 2).toISOString(),
+        description: "Ride ID: #NQT-7281 (Dropoff: Indiranagar)",
+        type: "credit",
+        category: "ride",
+        amount: 180,
+        status: "completed"
+      },
+      {
+        id: "tx-init-2",
+        date: new Date(Date.now() - 3600000 * 5).toISOString(),
+        description: "Ride ID: #NQT-6192 (Dropoff: Koramangala)",
+        type: "credit",
+        category: "ride",
+        amount: 220,
+        status: "completed"
+      }
+    ];
+  });
   const [filter, setFilter] = useState("all");
   const [modal, setModal] = useState(null);
   const [amountInput, setAmountInput] = useState("");
@@ -36,11 +61,17 @@ export default function WalletDashboard() {
     e.preventDefault();
     const amount = parseFloat(amountInput);
     if (!amount || amount <= 0) { showMessage("Enter a valid amount."); return; }
-    setBalance(b => b + amount);
-    setTransactions(prev => [{
+    const newBal = balance + amount;
+    setBalance(newBal);
+    localStorage.setItem("driver_wallet_balance", newBal.toString());
+    
+    const newTx = [{
       id: `tx-${Date.now()}`, date: new Date().toISOString(), description: "Wallet top-up",
       type: "credit", category: "topup", amount, status: "completed"
-    }, ...prev]);
+    }, ...transactions];
+    setTransactions(newTx);
+    localStorage.setItem("driver_transactions", JSON.stringify(newTx));
+
     setAmountInput(""); setModal(null);
     showMessage(`${formatCurrency(amount)} added to your wallet.`);
   };
@@ -50,11 +81,17 @@ export default function WalletDashboard() {
     const amount = parseFloat(amountInput);
     if (!amount || amount <= 0) { showMessage("Enter a valid amount."); return; }
     if (amount > balance) { showMessage("Insufficient balance."); return; }
-    setBalance(b => b - amount);
-    setTransactions(prev => [{
+    const newBal = balance - amount;
+    setBalance(newBal);
+    localStorage.setItem("driver_wallet_balance", newBal.toString());
+
+    const newTx = [{
       id: `tx-${Date.now()}`, date: new Date().toISOString(), description: "Withdrawal to bank",
       type: "debit", category: "withdrawal", amount, status: "completed"
-    }, ...prev]);
+    }, ...transactions];
+    setTransactions(newTx);
+    localStorage.setItem("driver_transactions", JSON.stringify(newTx));
+
     setAmountInput(""); setModal(null);
     showMessage(`${formatCurrency(amount)} withdrawn successfully.`);
   };
