@@ -37,6 +37,7 @@ import RatingsReviews from './pages/customer/RatingsReviews';
 import SavedUpiCards from './pages/customer/SavedUpiCards';
 import TripCostSummary from './pages/customer/TripCostSummary';
 import CustomerScanPay from './pages/customer/CustomerScanPay';
+import Insurance from './pages/customer/Insurance';
 
 // Driver Pages
 import WalletDashboard from './pages/driver/WalletDashboard';
@@ -190,10 +191,12 @@ function App() {
       destination: rideData.destination,
       selectedRide: rideData.selectedRide,
       paymentMethod: rideData.paymentMethod,
-      price: rideData.selectedRide?.price || 186,
+      price: (rideData.selectedRide?.price || 186) + (rideData.insurancePlan === 'monthly' ? 99 : rideData.insurancePlan === 'yearly' ? 999 : 0),
       status: "pending",
       driverDetails: null,
       otp: otpVal,
+      insurance: rideData.insurance,
+      insurancePlan: rideData.insurancePlan,
     };
     localStorage.setItem("nqtaxi_active_booking", JSON.stringify(booking));
     setRideData((current) => ({
@@ -237,6 +240,7 @@ function App() {
       /></Layout></ProtectedRoute>} />
       <Route path="/customer/ride-options" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RideOptionsRoute rideData={rideData} setRideData={setRideData} /></Layout></ProtectedRoute>} />
       <Route path="/customer/confirm-ride" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><ConfirmRideRoute rideData={rideData} onConfirmBooking={onBookingConfirmed} /></Layout></ProtectedRoute>} />
+      <Route path="/customer/insurance" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><Insurance rideData={rideData} setRideData={setRideData} /></Layout></ProtectedRoute>} />
       <Route path="/customer/booking" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><BookingSpinner onComplete={() => {}} /></Layout></ProtectedRoute>} />
       <Route path="/customer/driver-on-the-way" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><DriverOnTheWayRoute driverDetails={rideData.driverDetails} otp={rideData.otp} /></Layout></ProtectedRoute>} />
       <Route path="/customer/ride-in-progress" element={<ProtectedRoute authReady={authReady} isAuthenticated={isAuthenticated} role={role} allowedRole="rider"><Layout><RideInProgressRoute ride={rideData.selectedRide} driverDetails={rideData.driverDetails} /></Layout></ProtectedRoute>} />
@@ -409,6 +413,9 @@ function ConfirmRideRoute({ rideData, onConfirmBooking }) {
       destination={rideData.destination || "Kempegowda Airport"}
       ride={rideData.selectedRide || sampleRide}
       paymentMethod={rideData.paymentMethod}
+      insurance={rideData.insurance}
+      insurancePlan={rideData.insurancePlan}
+      onSelectInsurance={() => navigate("/customer/insurance")}
       onBack={() => navigate("/customer/ride-options")}
       onConfirmBooking={onConfirmBooking}
     />

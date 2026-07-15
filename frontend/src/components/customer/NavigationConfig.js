@@ -11,6 +11,7 @@ import {
   Bell,
   HelpCircle,
   ShieldAlert,
+  Shield,
   Settings,
   LogOut,
 } from 'lucide-react';
@@ -49,6 +50,7 @@ export const moreMenuSections = [
       { id: 'alerts', label: 'Alerts', icon: Bell, path: '/customer/notifications' },
       { id: 'support', label: 'Support Center', icon: HelpCircle, path: '#' }, // Add support route later
       { id: 'sos', label: 'SOS Safety', icon: ShieldAlert, path: '/customer/sos' },
+      { id: 'insurance', label: 'Trip Insurance', icon: Shield, path: '/customer/insurance' },
     ],
   },
   {
