@@ -217,7 +217,14 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const { setRole, setAuthenticated, setDriverOtpVerified, setDriverProfileCompleted, setDriverDocumentsCompleted } = useAppStore();
+  const { 
+    setRole, 
+    setAuthenticated, 
+    setDriverOtpVerified, 
+    setDriverProfileCompleted, 
+    setDriverDocumentsCompleted,
+    setDriverProfile
+  } = useAppStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -237,6 +244,17 @@ export default function Login() {
         setAuthenticated(true);
         setLoading(false);
         if (userRole === 'driver') {
+          // Generate a default/fallback UPI ID automatically for the driver
+          const nameKey = (result.user.fullName || 'Demo Driver').toLowerCase().replace(/[^a-z0-9]/g, '');
+          const generatedUpi = `${nameKey}@okaxis`;
+          
+          setDriverProfile({
+            fullName: result.user.fullName || 'Demo Driver',
+            email: result.user.email || 'demo.driver@nqtaxi.com',
+            phone: result.user.phone || '+91 9000000002',
+            upiId: generatedUpi,
+          });
+
           setDriverOtpVerified(true);
           setDriverProfileCompleted(true);
           setDriverDocumentsCompleted(true);
@@ -252,6 +270,28 @@ export default function Login() {
       }
     } catch (err) {
       setError('Something went wrong. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider) => {
+    setError('');
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const result = await initiateLogin(DEMO_CREDENTIALS.email, DEMO_CREDENTIALS.password);
+      if (result.success) {
+        const userRole = result.user.role;
+        setRole(userRole);
+        setAuthenticated(true);
+        setLoading(false);
+        navigate('/', { replace: true });
+      } else {
+        setError(result.error);
+        setLoading(false);
+      }
+    } catch (err) {
+      setError(`Unable to sign in with ${provider}. Please try again.`);
       setLoading(false);
     }
   };
@@ -364,6 +404,56 @@ export default function Login() {
                   Login
                 </Button>
               </form>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/10"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-[#0f0f0f] px-4 text-text-secondary font-bold">Or continue with</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleSocialLogin('Google')}
+                  className="flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-white/10 bg-surface-elevated text-sm font-bold text-text-primary hover:bg-surface-elevated/80 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path
+                      fill="#EA4335"
+                      d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582l3.51-3.51C17.642 1.09 14.974 0 12 0 7.354 0 3.307 2.68 1.401 6.602l3.865 3.163z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M16.04 15.345c-1.077.733-2.43 1.164-4.04 1.164-2.927 0-5.413-1.976-6.297-4.636L1.83 15.03A11.96 11.96 0 0 0 12 24c3.273 0 6.012-1.082 8.016-2.937l-3.976-3.718z"
+                    />
+                    <path
+                      fill="#4285F4"
+                      d="M23.49 12.273c0-.818-.073-1.609-.209-2.373H12v4.582h6.45c-.277 1.482-1.114 2.736-2.373 3.582l3.977 3.718c2.327-2.145 3.436-5.309 3.436-8.927z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.703 11.873a7.127 7.127 0 0 1 0-2.108L1.838 6.602a11.968 11.968 0 0 0 0 10.796l3.865-3.163v-.362z"
+                    />
+                  </svg>
+                  Google
+                </button>
+
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleSocialLogin('Apple')}
+                  className="flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-white/10 bg-surface-elevated text-sm font-bold text-text-primary hover:bg-surface-elevated/80 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.702z" />
+                  </svg>
+                  Apple
+                </button>
+              </div>
             </Card>
 
             <div className="mt-5 rounded-2xl border border-white/10 bg-[#0f0f0f] px-4 py-3 text-sm text-white/65">
