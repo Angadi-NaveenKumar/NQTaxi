@@ -1,3 +1,4 @@
+import axios from "axios";
 /**
  * Authentication service for NQTaxi.
  *
@@ -330,52 +331,62 @@ export async function initiateRegistration(userData) {
   return { success: true, maskedContact: maskEmail(session.email) };
 }
 
-export async function initiateLogin(identifier, password) {
-  await delay(500);
+export async function initiateLogin(email, password) {
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/login/",
+      {
+        username: "navin",
+        password: password,
+      }
+    );
 
-  const user = findUserByIdentifier(identifier);
-  if (!user) {
-    return { success: false, error: 'Invalid email or password. Please try again.' };
-  }
+    localStorage.setItem("access", response.data.access);
+    localStorage.setItem("refresh", response.data.refresh);
 
-  if (user.status !== 'active') {
-    return { success: false, error: 'Your account is not active. Please contact support.' };
-  }
+    return {
+      success: true,
+      user: {
+        email: email,
+        role: "rider",
+      },
+    };
 
-  const validPassword = await verifyPassword(password, user);
-  if (!validPassword) {
-    return { success: false, error: 'Invalid email or password. Please try again.' };
-  }
-
-  createAuthSession(user);
-
-  return { success: true, user };
-}
-
-export async function verifyOtp(code) {
-  await delay(800);
-
-  const session = getOtpSession();
-  if (!session) {
-    return { success: false, error: 'Verification session not found. Please start again.' };
-  }
-
-  if (Date.now() > session.expiresAt) {
-    clearOtpSession();
-    return { success: false, error: 'Verification code has expired. Please request a new one.' };
-  }
-
-  if (isDevelopmentMode()) {
-    const devOtp = getDevOtp();
-    if (code !== devOtp) {
-      return { success: false, error: 'Invalid verification code. Please check and try again.' };
-    }
-  } else {
+  } catch (error) {
+    console.log(error.response?.data);
     return {
       success: false,
-      error: 'SMS verification is temporarily unavailable. Please try again later.',
+      error: "Invalid email or password",
     };
   }
+}
+
+  
+
+export async function verifyOtp(phone, otp) {
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/verify-otp/",
+      {
+        phone: phone,
+        otp: otp,
+      }
+    );
+
+    return {
+      success: true,
+      data: response.data,
+    };
+
+  } catch (error) {
+    console.log(error.response?.data);
+
+    return {
+      success: false,
+      error: error.response?.data?.detail || "Invalid OTP",
+    };
+  }
+}
 
   if (session.purpose === 'register') {
     const duplicate = checkDuplicateAccount(session.userData.email, session.userData.phone);
@@ -403,7 +414,7 @@ export async function verifyOtp(code) {
 
   clearOtpSession();
   return { success: false, error: 'Invalid verification session. Please register again.' };
-}
+
 
 export async function resendOtp() {
   await delay(500);

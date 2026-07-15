@@ -1,5 +1,5 @@
 // import { useState } from 'react';
-// import { mockLogin } from '../../services/mockLogin';
+// import { initiateLogin } from "../services/authService";
 // import { saveSession } from '../../services/session';
 
 // const inputClass =
@@ -42,7 +42,7 @@
 
 //     setLoading(true);
 //     try {
-//       const session = await mockLogin(email, password);
+//       const session = await initiateLogin(email, password);
 //       saveSession(session);
 //       onSuccess(session);
 //     } catch (err) {
@@ -201,7 +201,7 @@
 
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { mockLogin } from '../../services/mockLogin';
+import { initiateLogin } from '../../services/authService';
 import { saveSession } from '../../services/session';
 
 const inputClass =
@@ -243,13 +243,20 @@ export default function AdminLogin({ onSuccess }) {
     if (!validate()) return;
 
     setLoading(true);
-    try {
-      const session = await mockLogin(email, password);
-      saveSession(session);
-      onSuccess(session);
-    } catch (err) {
-      setFormError(err.message || 'Login failed. Please try again.');
-    } finally {
+    try{
+  const result = await initiateLogin(email, password);
+
+  if (!result.success) {
+    setFormError(result.error);
+    return;
+  }
+
+  saveSession(result.user);
+  onSuccess(result.user);
+
+} catch (err) {
+  setFormError(err.message || 'Login failed. Please try again.');
+} finally {
       setLoading(false);
     }
   }

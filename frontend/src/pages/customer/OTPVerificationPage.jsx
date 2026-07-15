@@ -121,7 +121,8 @@ export default function OTPVerification() {
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight">Verify Identity</h1>
           <p className="text-text-secondary">
-            We've sent a 6-digit code to <span className="text-text-primary font-bold">{maskedContact}</span>
+            We sent a 6-digit code to <span className="text-text-primary font-bold">{maskedContact}</span>.
+            Enter it below to finish sign-up.
           </p>
         </div>
 
@@ -178,6 +179,9 @@ export default function OTPVerification() {
           <div className="bg-info/10 p-4 rounded-xl border border-info/20 text-center">
             <p className="text-xs text-text-secondary">
               Development mode: use OTP <span className="text-info font-bold">{getDevOtp()}</span>
+            </p>
+            <p className="mt-2 text-[11px] text-text-secondary">
+              If you registered from the API directly, the backend also returns the OTP in the response body.
             </p>
           </div>
         )}
