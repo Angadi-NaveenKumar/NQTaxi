@@ -1,31 +1,29 @@
 /**
  * Authentication service for NQTaxi.
  *
- * Development: demo accounts, demo OTP, localStorage user store.
- * Production: OTP gated behind future SMS/API integration.
+ * Connects the frontend auth pages to the Django backend auth endpoints.
  */
 
-const USERS_STORAGE_KEY = 'nqtaxi_registered_users';
 const OTP_SESSION_KEY = 'nqtaxi_otp_session';
 const AUTH_SESSION_KEY = 'nqtaxi_auth_session';
 const OTP_EXPIRY_MS = 5 * 60 * 1000;
 const SESSION_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api').replace(/\/$/, '');
 
-const DEMO_ACCOUNTS = [
+const DEMO_USERS = [
   {
     email: 'demo.customer@nqtaxi.com',
     password: 'Demo@123',
     role: 'rider',
     fullName: 'Demo Customer',
-    phone: '+91 9000000001',
-    otp: '5729',
+    phone: '+919000000001',
   },
   {
     email: 'demo.driver@nqtaxi.com',
     password: 'Demo@123',
     role: 'driver',
     fullName: 'Demo Driver',
-    phone: '+91 9000000002',
+    phone: '+919000000002',
   },
 ];
 
@@ -40,15 +38,8 @@ export function getDevOtp() {
   return import.meta.env.VITE_DEV_OTP || '123456';
 }
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function storageGet(key) {
   try {
-    if (key === USERS_STORAGE_KEY) {
-      return localStorage.getItem(key);
-    }
     return sessionStorage.getItem(key);
   } catch {
     return null;
@@ -57,11 +48,7 @@ function storageGet(key) {
 
 function storageSet(key, value) {
   try {
-    if (key === USERS_STORAGE_KEY) {
-      localStorage.setItem(key, value);
-    } else {
-      sessionStorage.setItem(key, value);
-    }
+    sessionStorage.setItem(key, value);
     return true;
   } catch {
     return false;
@@ -70,138 +57,34 @@ function storageSet(key, value) {
 
 function storageRemove(key) {
   try {
-    if (key === USERS_STORAGE_KEY) {
-      localStorage.removeItem(key);
-    } else {
-      sessionStorage.removeItem(key);
-    }
+    sessionStorage.removeItem(key);
   } catch {
     // ignore
   }
 }
 
-export async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-
-async function verifyPassword(password, user) {
-  if (!user) return false;
-  const hash = await hashPassword(password);
-  if (user.passwordHash) return user.passwordHash === hash;
-  if (user.password) return user.password === password;
-  return false;
-}
-
-function normalizeEmail(email) {
-  return email?.toLowerCase().trim() || '';
-}
-
-function normalizePhone(phone) {
-  return phone?.replace(/\s/g, '').trim() || '';
-}
-
-function getUsers() {
-  try {
-    const data = storageGet(USERS_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveUsers(users) {
-  const saved = storageSet(USERS_STORAGE_KEY, JSON.stringify(users));
-  if (!saved) {
-    throw new Error('Unable to save account data. Please enable browser storage and try again.');
-  }
-}
-
-function findUserByIdentifier(identifier) {
-  const users = getUsers();
-  const emailKey = normalizeEmail(identifier);
-  const phoneKey = normalizePhone(identifier);
-
-  return users.find((user) => {
-    if (user.status && user.status !== 'active') return false;
-    if (user.isVerified === false) return false;
-    if (user.email === emailKey) return true;
-    if (normalizePhone(user.phone) === phoneKey) return true;
-    return false;
-  });
-}
-
-async function buildUserRecord({ fullName, email, phone, password, role, otp }) {
-  return {
-    id: typeof crypto !== 'undefined' && crypto.randomUUID
-      ? crypto.randomUUID()
-      : Date.now().toString(),
-    fullName: fullName.trim(),
-    email: normalizeEmail(email),
-    phone: phone.trim(),
-    passwordHash: await hashPassword(password),
-    role,
-    status: 'active',
-    isVerified: true,
-    createdAt: Date.now(),
-    otp: role === 'rider' ? (otp || Math.floor(1000 + Math.random() * 9000).toString()) : undefined,
+async function requestJson(path, options = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {}),
   };
-}
 
-async function seedDemoAccounts() {
-  if (!isDevelopmentMode()) return;
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers,
+  });
 
-  const users = getUsers();
-  let changed = false;
+  const contentType = response.headers.get('content-type') || '';
+  const data = contentType.includes('application/json')
+    ? await response.json()
+    : await response.text();
 
-  for (const demo of DEMO_ACCOUNTS) {
-    const exists = users.some((u) => u.email === demo.email);
-    if (exists) continue;
-
-    const record = await buildUserRecord(demo);
-    users.push(record);
-    changed = true;
-  }
-
-  if (changed) saveUsers(users);
-}
-
-async function migrateLegacyUsers() {
-  const users = getUsers();
-  let changed = false;
-
-  for (const user of users) {
-    if (user.password && !user.passwordHash) {
-      user.passwordHash = await hashPassword(user.password);
-      delete user.password;
-      changed = true;
-    }
-    if (!user.status) {
-      user.status = 'active';
-      changed = true;
-    }
-    if (user.isVerified === undefined) {
-      user.isVerified = true;
-      changed = true;
-    }
-    if (user.role === 'rider' && !user.otp) {
-      user.otp = user.email === 'demo.customer@nqtaxi.com' ? '5729' : Math.floor(1000 + Math.random() * 9000).toString();
-      changed = true;
-    }
-  }
-
-  if (changed) saveUsers(users);
+  return { response, data };
 }
 
 export function initializeAuthService() {
   if (initialized) return;
   initialized = true;
-  seedDemoAccounts().catch(() => {});
-  migrateLegacyUsers().catch(() => {});
 }
 
 export function getOtpSession() {
@@ -226,14 +109,14 @@ export function clearOtpSession() {
 
 export function createAuthSession(user) {
   const session = {
-    userId: user.id,
+    userId: user.id || `${user.email || user.username || user.phone || 'user'}-${Date.now()}`,
     email: user.email,
-    role: user.role,
-    fullName: user.fullName,
+    phone: user.phone,
+    role: user.role || 'rider',
+    fullName: user.fullName || user.username || user.email,
+    accessToken: user.access,
+    refreshToken: user.refresh,
     expiresAt: Date.now() + SESSION_EXPIRY_MS,
-    token: typeof crypto !== 'undefined' && crypto.randomUUID
-      ? crypto.randomUUID()
-      : `${user.id}-${Date.now()}`,
   };
 
   const saved = storageSet(AUTH_SESSION_KEY, JSON.stringify(session));
@@ -264,16 +147,18 @@ export function restoreAuthSession() {
     return null;
   }
 
-  const user = getUsers().find(
-    (u) => u.id === session.userId && u.status === 'active',
-  );
-
-  if (!user) {
-    clearAuthSession();
-    return null;
-  }
-
-  return { session, user };
+  return {
+    session,
+    user: {
+      id: session.userId,
+      email: session.email,
+      phone: session.phone,
+      role: session.role,
+      fullName: session.fullName,
+      access: session.accessToken,
+      refresh: session.refreshToken,
+    },
+  };
 }
 
 export function logout() {
@@ -288,79 +173,144 @@ export function maskEmail(email) {
   return `${masked}@${domain}`;
 }
 
-export function checkDuplicateAccount(email, phone) {
-  const users = getUsers();
-  const normalizedEmail = normalizeEmail(email);
-  const normalizedPhone = phone?.trim();
-
-  if (users.some((u) => u.email === normalizedEmail)) {
-    return {
-      duplicate: true,
-      message: 'An account with this email already exists. Please sign in instead.',
-    };
-  }
-  if (users.some((u) => u.phone === normalizedPhone)) {
-    return {
-      duplicate: true,
-      message: 'An account with this phone number already exists.',
-    };
-  }
-  return { duplicate: false };
-}
-
 export async function initiateRegistration(userData) {
-  await delay(500);
+  try {
+    const payload = {
+      username: userData.fullName?.trim() || userData.username || userData.email?.split('@')[0],
+      email: userData.email.trim(),
+      phone: userData.phone.trim(),
+      role: userData.role || 'rider',
+      password: userData.password,
+    };
 
-  const duplicate = checkDuplicateAccount(userData.email, userData.phone);
-  if (duplicate.duplicate) {
-    return { success: false, error: duplicate.message };
+    const { response, data } = await requestJson('/register/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const message = data?.detail || data?.error || Object.values(data || {}).flat().join(' ') || 'Registration failed';
+      return { success: false, error: message };
+    }
+
+    const session = {
+      purpose: 'register',
+      email: payload.email,
+      phone: payload.phone,
+      userData: payload,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + OTP_EXPIRY_MS,
+    };
+
+    setOtpSession(session);
+
+    await requestJson('/send-otp/', {
+      method: 'POST',
+      body: JSON.stringify({ phone: payload.phone }),
+    });
+
+    return { success: true, maskedContact: maskEmail(payload.email) };
+  } catch {
+    return { success: false, error: 'Unable to connect to the server. Please try again.' };
+  }
+}
+export async function initiateLogin(identifier, password) {
+
+  console.log("AUTH SERVICE LOGIN STARTED:", identifier);
+
+  const normalizedIdentifier = (identifier || '').trim();
+  const normalizedPassword = (password || '').trim();
+
+  const demoUser = DEMO_USERS.find((user) => {
+    const matchesEmail = user.email.toLowerCase() === normalizedIdentifier.toLowerCase();
+    const matchesPhone = user.phone === normalizedIdentifier;
+    return (matchesEmail || matchesPhone) && user.password === normalizedPassword;
+  });
+
+  if (demoUser) {
+    const user = {
+      id: `${demoUser.role}-${demoUser.email}`,
+      email: demoUser.email,
+      phone: demoUser.phone,
+      role: demoUser.role,
+      fullName: demoUser.fullName,
+      access: 'demo-access-token',
+      refresh: 'demo-refresh-token',
+    };
+
+    createAuthSession(user);
+    localStorage.setItem('access', user.access);
+    localStorage.setItem('refresh', user.refresh);
+
+    return { success: true, user };
   }
 
-  const session = {
-    purpose: 'register',
-    email: normalizeEmail(userData.email),
-    phone: userData.phone.trim(),
-    userData: {
-      fullName: userData.fullName.trim(),
-      email: normalizeEmail(userData.email),
-      phone: userData.phone.trim(),
-      password: userData.password,
-      role: userData.role,
-    },
-    createdAt: Date.now(),
-    expiresAt: Date.now() + OTP_EXPIRY_MS,
+ try {
+  const payload = {
+    username: normalizedIdentifier,
+    email: normalizedIdentifier,
+    phone: normalizedIdentifier,
+    password: normalizedPassword,
   };
 
-  setOtpSession(session);
+  console.log("Calling login API");
 
-  return { success: true, maskedContact: maskEmail(session.email) };
-}
+  const { response, data } = await requestJson('/login/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
 
-export async function initiateLogin(identifier, password) {
-  await delay(500);
+  console.log("Login response:", data);
 
-  const user = findUserByIdentifier(identifier);
-  if (!user) {
-    return { success: false, error: 'Invalid email or password. Please try again.' };
+  if (!response.ok) {
+    return {
+      success: false,
+      error: data?.detail || data?.error || 'Login failed',
+    };
   }
 
-  if (user.status !== 'active') {
-    return { success: false, error: 'Your account is not active. Please contact support.' };
+    const accessToken = data.access;
+    const refreshToken = data.refresh;
+
+    if (!accessToken) {
+      return { success: false, error: 'No access token returned by the server.' };
+    }
+
+    localStorage.setItem('access', accessToken);
+    localStorage.setItem('refresh', refreshToken);
+
+    const meResponse = await requestJson('/me/', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!meResponse.response.ok) {
+      return { success: false, error: 'Unable to load your account profile.' };
+    }
+
+    const user = {
+      ...meResponse.data,
+      access: accessToken,
+      refresh: refreshToken,
+    };
+
+    createAuthSession(user);
+
+    return {
+      success: true,
+      user,
+    };
+  } catch {
+    return {
+      success: false,
+      error: 'Unable to connect to the server.',
+    };
   }
-
-  const validPassword = await verifyPassword(password, user);
-  if (!validPassword) {
-    return { success: false, error: 'Invalid email or password. Please try again.' };
-  }
-
-  createAuthSession(user);
-
-  return { success: true, user };
 }
 
 export async function verifyOtp(code) {
-  await delay(800);
-
   const session = getOtpSession();
   if (!session) {
     return { success: false, error: 'Verification session not found. Please start again.' };
@@ -371,57 +321,45 @@ export async function verifyOtp(code) {
     return { success: false, error: 'Verification code has expired. Please request a new one.' };
   }
 
-  if (isDevelopmentMode()) {
-    const devOtp = getDevOtp();
-    if (code !== devOtp) {
-      return { success: false, error: 'Invalid verification code. Please check and try again.' };
-    }
-  } else {
-    return {
-      success: false,
-      error: 'SMS verification is temporarily unavailable. Please try again later.',
-    };
-  }
+  try {
+    const { response, data } = await requestJson('/verify-otp/', {
+      method: 'POST',
+      body: JSON.stringify({ phone: session.phone, otp: code }),
+    });
 
-  if (session.purpose === 'register') {
-    const duplicate = checkDuplicateAccount(session.userData.email, session.userData.phone);
-    if (duplicate.duplicate) {
-      clearOtpSession();
-      return { success: false, error: duplicate.message };
-    }
-
-    const newUser = await buildUserRecord(session.userData);
-    const users = getUsers();
-    users.push(newUser);
-    saveUsers(users);
-
-    const savedUser = getUsers().find((u) => u.email === newUser.email);
-    if (!savedUser || savedUser.passwordHash !== newUser.passwordHash) {
-      return {
-        success: false,
-        error: 'Account could not be saved. Please enable browser storage and try again.',
-      };
+    if (!response.ok) {
+      return { success: false, error: data?.error || 'Invalid verification code. Please try again.' };
     }
 
     clearOtpSession();
-    return { success: true, purpose: 'register', user: savedUser };
+    return { success: true, message: data?.message || 'Phone verified successfully.' };
+  } catch {
+    return { success: false, error: 'Unable to verify code right now. Please try again.' };
   }
-
-  clearOtpSession();
-  return { success: false, error: 'Invalid verification session. Please register again.' };
 }
 
 export async function resendOtp() {
-  await delay(500);
-
   const session = getOtpSession();
   if (!session) {
     return { success: false, error: 'Verification session not found. Please start again.' };
   }
 
-  session.createdAt = Date.now();
-  session.expiresAt = Date.now() + OTP_EXPIRY_MS;
-  setOtpSession(session);
+  try {
+    const { response, data } = await requestJson('/send-otp/', {
+      method: 'POST',
+      body: JSON.stringify({ phone: session.phone }),
+    });
 
-  return { success: true };
+    if (!response.ok) {
+      return { success: false, error: data?.error || 'Unable to resend the code.' };
+    }
+
+    session.createdAt = Date.now();
+    session.expiresAt = Date.now() + OTP_EXPIRY_MS;
+    setOtpSession(session);
+
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Unable to resend the code. Please try again.' };
+  }
 }

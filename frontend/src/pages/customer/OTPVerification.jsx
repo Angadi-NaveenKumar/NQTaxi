@@ -72,16 +72,10 @@ export default function OTPVerification() {
         return;
       }
 
-      // Set auth state
-      setAuthenticated(true);
-      setRole(result.user.role);
-
-      if (result.user.role === 'driver') {
-        setDriverOtpVerified(true);
-        navigate('/driver/profile-setup', { replace: true });
-      } else {
-        navigate('/customer/dashboard', { replace: true });
-      }
+      navigate('/login', {
+        replace: true,
+        state: { message: 'Account verified successfully. Please sign in.' },
+      });
     } catch {
       setError('Verification failed. Please check your connection and try again.');
     } finally {

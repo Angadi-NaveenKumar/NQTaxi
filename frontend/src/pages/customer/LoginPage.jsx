@@ -19,6 +19,7 @@ export default function Login() {
   const successMessage = location.state?.message;
 
   const handleLogin = async (e) => {
+    console.log("Login button clicked");
     e.preventDefault();
     setError('');
     
@@ -31,7 +32,10 @@ export default function Login() {
     try {
       console.log('Login attempt with:', { identifier: email, role });
       const result = await initiateLogin(email, password);
+      alert("Reached after initiateLogin");
+
       console.log('Login result:', result);
+      console.log("User:", result.user);
       if (!result.success) {
         setError(result.error);
         return;
@@ -98,7 +102,13 @@ export default function Login() {
             <p className="text-sm text-text-primary">Password: Demo@123</p>
           </div> */}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form
+  onSubmit={(e) => {
+    console.log("FORM SUBMITTED");
+    handleLogin(e);
+  }}
+  className="space-y-5"
+>
             <Input
               label="Email or Mobile Number"
               icon={Mail}
@@ -139,9 +149,15 @@ export default function Login() {
               <p className="text-sm text-error font-medium text-center">{error}</p>
             )}
 
-            <Button type="submit" className="w-full py-4 text-lg" loading={loading}>
-              Sign In
-            </Button>
+            <Button
+  type="button"
+  className="w-full py-4 text-lg"
+  onClick={handleLogin}
+>
+  Sign In
+</Button>
+            
+    
           </form>
 
           <div className="relative">

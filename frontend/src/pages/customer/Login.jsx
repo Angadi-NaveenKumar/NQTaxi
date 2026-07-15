@@ -232,7 +232,8 @@ export default function Login() {
     try {
       const result = await initiateLogin(email, password);
       if (result.success) {
-        const userRole = result.user.role;
+        const userRole = result.user?.role || 'rider';
+        console.log(result.user);
         setRole(userRole);
         setAuthenticated(true);
         setLoading(false);
@@ -242,9 +243,9 @@ export default function Login() {
           setDriverDocumentsCompleted(true);
           navigate('/driver/dashboard', { replace: true });
         } else if (userRole === 'admin') {
-          navigate('/admin', { replace: true });
+          navigate('/admin/dashboard', { replace: true });
         } else {
-          navigate('/', { replace: true });
+          navigate('/customer/dashboard', { replace: true });
         }
       } else {
         setError(result.error);
@@ -321,7 +322,7 @@ export default function Login() {
                 <Input
                   label="Email"
                   icon={Mail}
-                  type="email"
+                  type="text"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
